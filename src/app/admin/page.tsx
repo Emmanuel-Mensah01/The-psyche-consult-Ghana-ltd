@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
 import BookingsPanel from '@/components/BookingsPanel';
+import InquiriesPanel from '@/components/InquiriesPanel';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 interface StudentProfile {
@@ -171,7 +172,7 @@ const DOC_STATUS_COLORS: Record<string, string> = {
   re_upload: 'bg-orange-50 text-orange-700',
 };
 
-type AdminTab = 'overview' | 'students' | 'applications' | 'documents' | 'bookings' | 'opportunities' | 'messages' | 'content';
+type AdminTab = 'overview' | 'students' | 'applications' | 'documents' | 'bookings' | 'inquiries' | 'opportunities' | 'messages' | 'content';
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -201,15 +202,20 @@ export default function AdminDashboardPage() {
   const [dataLoading, setDataLoading] = useState(true);
   const [pendingBookings, setPendingBookings] = useState(0);
 
-  // Pending-bookings badge (website form + student portal), refreshed on load
+  const [newInquiries, setNewInquiries] = useState(0);
+
+  // Badges for Bookings (pending) and Inquiries (new), refreshed on load
   useEffect(() => {
     if (!isAdmin) return;
     (async () => {
-      const [a, c] = await Promise.all([
+      const [a, c, l, ct] = await Promise.all([
         supabase.from('booking_requests').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
         supabase.from('consultations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('leads').select('id', { count: 'exact', head: true }).eq('status', 'new'),
+        supabase.from('contacts').select('id', { count: 'exact', head: true }).eq('status', 'new'),
       ]);
       setPendingBookings((a.count || 0) + (c.count || 0));
+      setNewInquiries((l.count || 0) + (ct.count || 0));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
@@ -577,7 +583,7 @@ export default function AdminDashboardPage() {
               <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
               </div>
-              <span className="font-bold text-gray-900 hidden sm:block text-sm">The Psyche Consult Ghana Ltd</span>
+              <span className="font-bold text-gray-900 hidden sm:block text-sm">The Psyche Consult</span>
             </Link>
             <span className="text-gray-300 hidden sm:block">|</span>
             <span className="text-indigo-600 font-semibold hidden sm:block text-sm">Admin Dashboard</span>
@@ -610,6 +616,7 @@ export default function AdminDashboardPage() {
             { key: 'applications', label: 'Applications', icon: '📋', badge: applications.filter((a) => a.status === 'application_received').length },
             { key: 'documents', label: 'Documents', icon: '📄', badge: documents.filter((d) => d.status === 'uploaded').length },
             { key: 'bookings', label: 'Bookings', icon: '📅', badge: pendingBookings },
+            { key: 'inquiries', label: 'Inquiries', icon: '📨', badge: newInquiries },
             { key: 'opportunities', label: 'Opportunities', icon: '🌍' },
             { key: 'messages', label: 'Messages', icon: '💬' },
             { key: 'content', label: 'Content', icon: '📝' },
@@ -1247,6 +1254,9 @@ export default function AdminDashboardPage() {
         {activeTab === 'bookings' && (
           <BookingsPanel supabase={supabase} adminId={user?.id} onPendingChange={setPendingBookings} />
         )}
+
+        {/* INQUIRIES TAB */}
+        {activeTab === 'inquiries' && <InquiriesPanel supabase={supabase} onNewChange={setNewInquiries} />}
 
         {/* ── MESSAGES TAB ── */}
         {activeTab === 'messages' && (
