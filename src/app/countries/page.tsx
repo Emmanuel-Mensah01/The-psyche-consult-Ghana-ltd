@@ -159,6 +159,7 @@ export default function CountriesPage() {
             .from('study_countries')
             .select('id, name, code, flag_emoji, description, image_url, display_order')
             .eq('is_active', true)
+            .eq('is_featured', true)
             .order('display_order', { ascending: true }),
           supabase.from('universities').select('country_id').eq('is_active', true).eq('is_partner', true).limit(5000),
         ]);

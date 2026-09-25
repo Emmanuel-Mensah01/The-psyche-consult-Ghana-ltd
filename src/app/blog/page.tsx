@@ -1,114 +1,18 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  category: string;
-  author: string;
-  date: string;
-  readTime: string;
-  emoji: string;
-  featured?: boolean;
-}
-
-const posts: BlogPost[] = [
-  {
-    id: 1,
-    title: 'How to Write a Winning Personal Statement for UK Universities',
-    excerpt: 'Your personal statement is your chance to stand out. Learn the exact structure, tone, and content strategies that get Ghanaian students accepted into top UK universities.',
-    category: 'Application Tips',
-    author: 'Ama Boateng',
-    date: 'July 15, 2025',
-    readTime: '8 min read',
-    emoji: '✍️',
-    featured: true,
-  },
-  {
-    id: 2,
-    title: 'Top 10 Fully-Funded Scholarships for African Students in 2025',
-    excerpt: 'A comprehensive guide to the most competitive fully-funded scholarships available to African students, including deadlines, eligibility, and application tips.',
-    category: 'Scholarships',
-    author: 'Kwame Asante',
-    date: 'July 10, 2025',
-    readTime: '12 min read',
-    emoji: '💰',
-    featured: true,
-  },
-  {
-    id: 3,
-    title: 'IELTS vs TOEFL: Which English Test Should You Take?',
-    excerpt: 'Both tests are widely accepted, but universities and countries have preferences. Here\'s how to decide which exam gives you the best shot at your target school.',
-    category: 'Test Preparation',
-    author: 'Efua Mensah',
-    date: 'July 5, 2025',
-    readTime: '6 min read',
-    emoji: '📝',
-  },
-  {
-    id: 4,
-    title: 'Student Visa Guide: UK Tier 4 Student Visa Explained',
-    excerpt: 'Everything you need to know about the UK Student Visa — from CAS numbers to biometric appointments, financial requirements, and common rejection reasons.',
-    category: 'Visa Guidance',
-    author: 'Kofi Darko',
-    date: 'June 28, 2025',
-    readTime: '10 min read',
-    emoji: '🛂',
-  },
-  {
-    id: 5,
-    title: 'Cost of Living in Canada: A Realistic Budget for Students',
-    excerpt: 'Tuition is just the beginning. We break down the real monthly costs of living in Toronto, Vancouver, and Montreal so you can plan your finances accurately.',
-    category: 'Student Life',
-    author: 'Abena Osei',
-    date: 'June 20, 2025',
-    readTime: '7 min read',
-    emoji: '🍁',
-  },
-  {
-    id: 6,
-    title: 'Germany\'s Free Tuition Universities: What You Need to Know',
-    excerpt: 'Public universities in Germany charge little to no tuition. But there are hidden costs and language requirements. Here\'s the full picture before you apply.',
-    category: 'Study Destinations',
-    author: 'Yaw Frimpong',
-    date: 'June 15, 2025',
-    readTime: '9 min read',
-    emoji: '🇩🇪',
-  },
-  {
-    id: 7,
-    title: 'How to Get a Strong Letter of Recommendation',
-    excerpt: 'A weak recommendation letter can sink an otherwise strong application. Learn how to approach professors and employers, and what to include in your briefing document.',
-    category: 'Application Tips',
-    author: 'Ama Boateng',
-    date: 'June 8, 2025',
-    readTime: '5 min read',
-    emoji: '📬',
-  },
-  {
-    id: 8,
-    title: 'Adjusting to Life Abroad: Tips from Ghanaian Students',
-    excerpt: 'Culture shock is real. We spoke to 20 Ghanaian students currently studying in the UK, US, and Canada about their first months abroad and how they found their footing.',
-    category: 'Student Life',
-    author: 'Efua Mensah',
-    date: 'May 30, 2025',
-    readTime: '11 min read',
-    emoji: '🌍',
-  },
-];
-
-const categories = ['All', 'Application Tips', 'Scholarships', 'Test Preparation', 'Visa Guidance', 'Student Life', 'Study Destinations'];
+import { posts, categories } from '@/data/blogPosts';
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filtered = activeCategory === 'All' ? posts : posts.filter((p) => p.category === activeCategory);
   const featured = posts.filter((p) => p.featured);
-  const regular = filtered.filter((p) => !p.featured || activeCategory !== 'All');
+  const nonFeatured = posts.filter((p) => !p.featured);
+  const filteredNonFeatured =
+    activeCategory === 'All' ? nonFeatured : posts.filter((p) => p.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-white">
@@ -125,7 +29,7 @@ export default function BlogPage() {
             📚 Knowledge Hub
           </span>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Blog & <span className="text-indigo-300">Resources</span>
+            Blog &amp; <span className="text-indigo-300">Resources</span>
           </h1>
           <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
             Expert guides, scholarship alerts, visa tips, and student stories — everything you need to navigate your international education journey.
@@ -140,9 +44,10 @@ export default function BlogPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Articles</h2>
             <div className="grid md:grid-cols-2 gap-8">
               {featured.map((post) => (
-                <article
+                <Link
                   key={post.id}
-                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-xl transition-all group cursor-pointer"
+                  href={`/blog/${post.slug}`}
+                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hover:shadow-xl transition-all group cursor-pointer block"
                 >
                   <div className="bg-gradient-to-br from-indigo-100 to-purple-100 h-48 flex items-center justify-center text-7xl">
                     {post.emoji}
@@ -169,7 +74,7 @@ export default function BlogPage() {
                       <span className="text-sm text-indigo-600 font-semibold group-hover:underline">Read more →</span>
                     </div>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           </div>
@@ -198,34 +103,42 @@ export default function BlogPage() {
 
           {/* Posts Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(activeCategory === 'All' ? posts.filter((p) => !p.featured) : filtered).map((post) => (
-              <article
-                key={post.id}
-                className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all group cursor-pointer"
-              >
-                <div className="bg-gradient-to-br from-gray-50 to-indigo-50 h-36 flex items-center justify-center text-5xl">
-                  {post.emoji}
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{post.category}</span>
-                    <span className="text-xs text-gray-400">{post.readTime}</span>
+            {filteredNonFeatured.length === 0 ? (
+              <p className="text-gray-500 col-span-full text-center py-12">
+                No articles in this category yet — check back soon.
+              </p>
+            ) : (
+              filteredNonFeatured.map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all group cursor-pointer block"
+                >
+                  <div className="bg-gradient-to-br from-gray-50 to-indigo-50 h-36 flex items-center justify-center text-5xl">
+                    {post.emoji}
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors leading-snug">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                        {post.author.charAt(0)}
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{post.category}</span>
+                      <span className="text-xs text-gray-400">{post.readTime}</span>
+                    </div>
+                    <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors leading-snug">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          {post.author.charAt(0)}
+                        </div>
+                        <p className="text-xs text-gray-500">{post.author} · {post.date}</p>
                       </div>
-                      <p className="text-xs text-gray-500">{post.author} · {post.date}</p>
+                      <span className="text-xs text-indigo-600 font-semibold group-hover:underline">Read →</span>
                     </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </section>
