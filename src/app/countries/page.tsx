@@ -147,20 +147,29 @@ function toSlug(name: string): string {
 
 export default function CountriesPage() {
   const [supabaseCountries, setSupabaseCountries] = useState<Country[]>([]);
+  const [uniCounts, setUniCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const supabase = createClient();
-        const { data } = await supabase
-          .from('study_countries')
-          .select('id, name, code, flag_emoji, description, image_url, display_order')
-          .eq('is_active', true)
-          .order('display_order', { ascending: true });
+        const [{ data }, { data: uniRows }] = await Promise.all([
+          supabase
+            .from('study_countries')
+            .select('id, name, code, flag_emoji, description, image_url, display_order')
+            .eq('is_active', true)
+            .order('display_order', { ascending: true }),
+          supabase.from('universities').select('country_id').eq('is_active', true).eq('is_partner', true).limit(5000),
+        ]);
         if (data && data.length > 0) {
           setSupabaseCountries(data);
         }
+        const tally: Record<string, number> = {};
+        (uniRows || []).forEach((u: { country_id: string | null }) => {
+          if (u.country_id) tally[u.country_id] = (tally[u.country_id] || 0) + 1;
+        });
+        setUniCounts(tally);
       } catch {
         // fall back to static
       } finally {
@@ -171,6 +180,7 @@ export default function CountriesPage() {
   }, []);
 
   const usingSupabase = supabaseCountries.length > 0;
+  const statsFor = (name: string) => staticCountries.find((c) => c.name.toLowerCase() === name.toLowerCase());
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -213,10 +223,12 @@ export default function CountriesPage() {
             ))}
           </div>
         ) : usingSupabase ? (
-          /* Supabase-powered grid */
+          /* Live grid, enriched with the same stats used before countries were in the database */
           <div className="grid md:grid-cols-2 gap-8">
             {supabaseCountries.map((country) => {
               const slug = toSlug(country.name);
+              const stats = statsFor(country.name);
+              const uniCount = uniCounts[country.id] ?? stats?.universities ?? 0;
               return (
                 <div
                   key={country.id}
@@ -224,17 +236,42 @@ export default function CountriesPage() {
                 >
                   <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 border-b-2 border-indigo-100">
                     <div className="flex items-start gap-4 mb-4">
-                      <div><Flag emoji={country.flag_emoji} code={country.code} width={72} /></div>
+                      <div><Flag emoji={country.flag_emoji || stats?.flag} code={country.code} width={72} /></div>
                       <div>
                         <h2 className="text-2xl font-bold text-gray-900">{country.name}</h2>
-                        {country.code && (
-                          <p className="text-indigo-600 font-semibold text-sm uppercase tracking-wide">{country.code}</p>
-                        )}
+                        <p className="text-indigo-600 font-semibold">
+                          {uniCount > 0 ? `${uniCount} Partner Universities` : country.code || ''}
+                        </p>
                       </div>
                     </div>
-                    {country.description && (
-                      <p className="text-gray-700 mb-6">{country.description}</p>
+                    <p className="text-gray-700 mb-4">{country.description || stats?.description}</p>
+
+                    {stats && (
+                      <>
+                        <div className="grid grid-cols-3 gap-4 mb-4">
+                          <div className="text-center p-3 bg-white rounded-lg">
+                            <div className="text-sm font-bold text-gray-900">{stats.students}</div>
+                            <div className="text-xs text-gray-600">Students</div>
+                          </div>
+                          <div className="text-center p-3 bg-white rounded-lg">
+                            <div className="text-sm font-bold text-gray-900">{stats.avgCost}</div>
+                            <div className="text-xs text-gray-600">Avg. Cost/Year</div>
+                          </div>
+                          <div className="text-center p-3 bg-white rounded-lg">
+                            <div className="text-sm font-bold text-gray-900">{stats.visaSuccess}</div>
+                            <div className="text-xs text-gray-600">Visa Success</div>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {stats.badges.map((badge) => (
+                            <span key={badge} className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs rounded-full font-medium">
+                              {badge}
+                            </span>
+                          ))}
+                        </div>
+                      </>
                     )}
+
                     <Link
                       href={`/countries/${slug}`}
                       className="block w-full text-center bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all"
