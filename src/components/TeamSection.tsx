@@ -24,20 +24,6 @@ const team = [
   },
   {
     emoji: '👨🏿‍💼',
-    name: 'Seth Acheampong',
-    role: 'Enrollment Officer / BDO',
-    bio: 'Dedicated enrollment officer focused on student success and business development.',
-    skills: ['Student Enrollment', 'Business Development', 'Client Relations'],
-  },
-  {
-    emoji: '👨🏿‍💼',
-    name: 'Emmanuel Bawuah',
-    role: 'Business Development Officer',
-    bio: 'Strategic business development professional expanding partnership opportunities.',
-    skills: ['Partnership Development', 'Market Expansion', 'Client Acquisition'],
-  },
-  {
-    emoji: '👨🏿‍💼',
     name: 'Benjamin Anane-Agyei',
     role: 'Test Prep Coordinator',
     bio: 'Expert test preparation coordinator helping students achieve their best scores.',
