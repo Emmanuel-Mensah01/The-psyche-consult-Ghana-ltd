@@ -1382,6 +1382,10 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
   const [uploadSuccess, setUploadSuccess] = useState('');
   const videoInputRef = useRef<HTMLInputElement>(null);
   const flyerInputRef = useRef<HTMLInputElement>(null);
+  const thumbInputRef = useRef<HTMLInputElement>(null);
+  const testimonialVideoInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [uploadingTestimonialVideo, setUploadingTestimonialVideo] = useState(false);
 
   const saveTestimonial = async () => {
     if (!testimonialForm.student_name.trim()) { setTestimonialError('Student name is required'); return; }
@@ -1389,10 +1393,12 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     try {
       const payload = { ...testimonialForm, video_url: testimonialForm.video_url || null, thumbnail_url: testimonialForm.thumbnail_url || null, quote: testimonialForm.quote || null };
       if (editingTestimonial) {
-        await supabase.from('testimonials').update(payload).eq('id', editingTestimonial.id);
+        const { error: tUpdErr } = await supabase.from('testimonials').update(payload).eq('id', editingTestimonial.id);
+        if (tUpdErr) throw tUpdErr;
         setTestimonials((p) => p.map((t) => t.id === editingTestimonial.id ? { ...t, ...payload } : t));
       } else {
-        const { data } = await supabase.from('testimonials').insert(payload).select().single();
+        const { data, error: tInsErr } = await supabase.from('testimonials').insert(payload).select().single();
+        if (tInsErr) throw tInsErr;
         if (data) setTestimonials((p) => [...p, data]);
       }
       setShowTestimonialForm(false); setEditingTestimonial(null);
@@ -1406,10 +1412,12 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     try {
       const payload = { ...contentForm, description: contentForm.description || null, image_url: contentForm.image_url || null, link_url: contentForm.link_url || null, expires_at: contentForm.expires_at ? new Date(contentForm.expires_at).toISOString() : null };
       if (editingContent) {
-        await supabase.from('content_items').update(payload).eq('id', editingContent.id);
+        const { error: updErr } = await supabase.from('content_items').update(payload).eq('id', editingContent.id);
+        if (updErr) throw updErr;
         setContentItems((p) => p.map((c) => c.id === editingContent.id ? { ...c, ...payload } : c));
       } else {
-        const { data } = await supabase.from('content_items').insert(payload).select().single();
+        const { data, error: insErr } = await supabase.from('content_items').insert(payload).select().single();
+        if (insErr) throw insErr;
         if (data) setContentItems((p) => [...p, data]);
       }
       setShowContentForm(false); setEditingContent(null);
@@ -1417,36 +1425,93 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     finally { setContentSaving(false); }
   };
 
+  const MAX_VIDEO_MB = 90; // bucket limit is 100 MB
+  const MAX_IMAGE_MB = 9;  // bucket limit is 10 MB
+
+  // Uploads a file to storage and returns its public URL
+  const uploadToBucket = async (bucket: string, folder: string, file: File): Promise<string> => {
+    const fileName = `${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+    const { error: uploadErr } = await supabase.storage.from(bucket).upload(fileName, file, { upsert: false, contentType: file.type || undefined });
+    if (uploadErr) throw uploadErr;
+    const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
+    return urlData?.publicUrl || '';
+  };
+
+  const openContentEditor = (c: ContentItem) => {
+    setEditingContent(c);
+    setContentForm({ title: c.title, description: c.description || '', content_type: c.content_type, image_url: c.image_url || '', link_url: c.link_url || '', is_published: c.is_published, display_order: c.display_order, expires_at: c.expires_at ? c.expires_at.split('T')[0] : '' });
+    setContentError('');
+    setShowContentForm(true);
+  };
+
   const handleFileUpload = async (file: File, type: 'video' | 'flyer') => {
     setUploadingFile(true); setUploadError(''); setUploadSuccess('');
     try {
-      const fileName = `${type}s/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      const limitMb = type === 'video' ? MAX_VIDEO_MB : MAX_IMAGE_MB;
+      if (file.size > limitMb * 1024 * 1024) throw new Error(`File is too large (${(file.size / 1048576).toFixed(0)} MB). Maximum is ${limitMb} MB.`);
+      if (type === 'video' && !/^video\/(mp4|webm|ogg|quicktime)$/.test(file.type)) throw new Error('Unsupported video format. Please upload an MP4 (recommended), WebM, or MOV file.');
+
       const bucket = type === 'video' ? 'testimonial-media' : 'content-media';
-      const { error: uploadErr } = await supabase.storage.from(bucket).upload(fileName, file, { upsert: false });
-      if (uploadErr) throw uploadErr;
-      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
-      const publicUrl = urlData?.publicUrl || '';
+      const publicUrl = await uploadToBucket(bucket, `${type}s`, file);
 
       // Save as content item
-      const contentType = type === 'video' ? 'video' : 'flyer';
       const title = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
-      const { data } = await supabase.from('content_items').insert({
+      const { data, error: insErr } = await supabase.from('content_items').insert({
         title,
-        content_type: contentType,
+        content_type: type === 'video' ? 'video' : 'flyer',
         image_url: type === 'flyer' ? publicUrl : null,
         link_url: type === 'video' ? publicUrl : null,
         is_published: false,
         display_order: contentItems.length,
       }).select().single();
-      if (data) setContentItems((p) => [...p, data]);
-      setUploadSuccess(`${type === 'video' ? 'Video' : 'Flyer'} uploaded successfully! You can now edit its details and publish it.`);
-      setTimeout(() => setUploadSuccess(''), 5000);
+      if (insErr) throw insErr;
+      if (data) {
+        setContentItems((p) => [...p, data]);
+        // Open the editor straight away so a title, thumbnail and Publish can be set
+        if (type === 'video') openContentEditor(data);
+      }
+      setUploadSuccess(type === 'video'
+        ? 'Video uploaded! Give it a title, add an optional thumbnail, tick "Publish on website" and save.'
+        : 'Flyer uploaded successfully! You can now edit its details and publish it.');
+      setTimeout(() => setUploadSuccess(''), 8000);
     } catch (err: unknown) {
       setUploadError(err instanceof Error ? err.message : 'Upload failed. Please try again.');
     } finally {
       setUploadingFile(false);
       if (videoInputRef.current) videoInputRef.current.value = '';
       if (flyerInputRef.current) flyerInputRef.current.value = '';
+    }
+  };
+
+  // Thumbnail image for a video (content item form)
+  const handleThumbnailUpload = async (file: File) => {
+    setUploadingThumb(true); setContentError('');
+    try {
+      if (!file.type.startsWith('image/')) throw new Error('Thumbnail must be an image (JPG, PNG or WebP).');
+      if (file.size > MAX_IMAGE_MB * 1024 * 1024) throw new Error(`Thumbnail is too large. Maximum is ${MAX_IMAGE_MB} MB.`);
+      const url = await uploadToBucket('content-media', 'thumbnails', file);
+      setContentForm((f) => ({ ...f, image_url: url }));
+    } catch (err: unknown) {
+      setContentError(err instanceof Error ? err.message : 'Thumbnail upload failed.');
+    } finally {
+      setUploadingThumb(false);
+      if (thumbInputRef.current) thumbInputRef.current.value = '';
+    }
+  };
+
+  // Video file for a testimonial (fills the Video URL field)
+  const handleTestimonialVideoUpload = async (file: File) => {
+    setUploadingTestimonialVideo(true); setTestimonialError('');
+    try {
+      if (!/^video\/(mp4|webm|ogg|quicktime)$/.test(file.type)) throw new Error('Unsupported video format. Please upload an MP4 (recommended), WebM, or MOV file.');
+      if (file.size > MAX_VIDEO_MB * 1024 * 1024) throw new Error(`Video is too large. Maximum is ${MAX_VIDEO_MB} MB.`);
+      const url = await uploadToBucket('testimonial-media', 'testimonials', file);
+      setTestimonialForm((f) => ({ ...f, video_url: url }));
+    } catch (err: unknown) {
+      setTestimonialError(err instanceof Error ? err.message : 'Video upload failed.');
+    } finally {
+      setUploadingTestimonialVideo(false);
+      if (testimonialVideoInputRef.current) testimonialVideoInputRef.current.value = '';
     }
   };
 
@@ -1535,7 +1600,13 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
                 <div><label className={labelClass}>Student Name *</label><input type="text" value={testimonialForm.student_name} onChange={(e) => setTestimonialForm({ ...testimonialForm, student_name: e.target.value })} className={inputClass} /></div>
                 <div><label className={labelClass}>University</label><input type="text" value={testimonialForm.university} onChange={(e) => setTestimonialForm({ ...testimonialForm, university: e.target.value })} className={inputClass} /></div>
                 <div><label className={labelClass}>Destination Country</label><input type="text" value={testimonialForm.destination} onChange={(e) => setTestimonialForm({ ...testimonialForm, destination: e.target.value })} className={inputClass} /></div>
-                <div><label className={labelClass}>Video URL (YouTube/Vimeo)</label><input type="url" value={testimonialForm.video_url} onChange={(e) => setTestimonialForm({ ...testimonialForm, video_url: e.target.value })} placeholder="https://youtube.com/watch?v=..." className={inputClass} /></div>
+                <div>
+                  <label className={labelClass}>Video (YouTube/Vimeo link or uploaded file)</label>
+                  <input type="url" value={testimonialForm.video_url} onChange={(e) => setTestimonialForm({ ...testimonialForm, video_url: e.target.value })} placeholder="https://youtube.com/watch?v=..." className={inputClass} />
+                  <input ref={testimonialVideoInputRef} type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" className="hidden" id="testimonial-video-upload" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleTestimonialVideoUpload(f); }} />
+                  <label htmlFor="testimonial-video-upload" className={`inline-block mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer ${uploadingTestimonialVideo ? 'opacity-60 pointer-events-none' : ''}`}>{uploadingTestimonialVideo ? '⏳ Uploading video...' : '⬆️ Or upload a video file'}</label>
+                  {testimonialForm.video_url && <p className="text-xs text-green-600 mt-1 truncate">✓ Video attached</p>}
+                </div>
                 <div><label className={labelClass}>Thumbnail Image URL</label><input type="url" value={testimonialForm.thumbnail_url} onChange={(e) => setTestimonialForm({ ...testimonialForm, thumbnail_url: e.target.value })} placeholder="https://..." className={inputClass} /></div>
                 <div className="sm:col-span-2"><label className={labelClass}>Quote / Review</label><textarea value={testimonialForm.quote} onChange={(e) => setTestimonialForm({ ...testimonialForm, quote: e.target.value })} rows={3} placeholder="Student's testimonial text..." className={`${inputClass} resize-none`} /></div>
                 <div className="flex items-center gap-2"><input type="checkbox" id="test-pub" checked={testimonialForm.is_published} onChange={(e) => setTestimonialForm({ ...testimonialForm, is_published: e.target.checked })} className="rounded" /><label htmlFor="test-pub" className="text-sm text-gray-700">Publish on website</label></div>
@@ -1584,9 +1655,9 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
           {/* Upload Card */}
           <div className="bg-white rounded-2xl border-2 border-dashed border-indigo-200 p-6 text-center">
             <div className="text-4xl mb-3">🎥</div>
-            <h3 className="font-bold text-gray-900 text-sm mb-1">Upload Testimonial Videos</h3>
-            <p className="text-xs text-gray-500 mb-4">Upload MP4, MOV, or AVI video files directly, or add a YouTube/Vimeo link below</p>
-            <input ref={videoInputRef} type="file" accept="video/*" className="hidden" id="video-upload"
+            <h3 className="font-bold text-gray-900 text-sm mb-1">Upload Promotional Videos</h3>
+            <p className="text-xs text-gray-500 mb-4">Upload an MP4 (recommended), WebM or MOV file up to 90 MB, or add a YouTube/Vimeo link below. Videos appear in the “Latest Updates” section of the homepage once published.</p>
+            <input ref={videoInputRef} type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime" className="hidden" id="video-upload"
               onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, 'video'); }} />
             <label htmlFor="video-upload"
               className={`inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-indigo-700 transition-colors ${uploadingFile ? 'opacity-60 pointer-events-none' : ''}`}>
@@ -1596,20 +1667,26 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
 
           {/* Add via URL */}
           <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <h3 className="font-bold text-gray-900 text-sm mb-3">Add Video via URL (YouTube / Vimeo)</h3>
+            <h3 className="font-bold text-gray-900 text-sm mb-3">{showContentForm && contentForm.content_type === 'video' ? (editingContent ? 'Edit Video Details' : 'Add Video via URL (YouTube / Vimeo)') : 'Add Video via URL (YouTube / Vimeo)'}</h3>
             {showContentForm && contentForm.content_type === 'video' ? (
               <div className="space-y-3">
                 {contentError && <p className="text-red-600 text-xs">{contentError}</p>}
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div><label className={labelClass}>Title *</label><input type="text" value={contentForm.title} onChange={(e) => setContentForm({ ...contentForm, title: e.target.value })} className={inputClass} /></div>
-                  <div><label className={labelClass}>Video URL *</label><input type="url" value={contentForm.link_url} onChange={(e) => setContentForm({ ...contentForm, link_url: e.target.value })} placeholder="https://youtube.com/watch?v=..." className={inputClass} /></div>
+                  <div><label className={labelClass}>Video URL * (uploaded file or YouTube/Vimeo link)</label><input type="url" value={contentForm.link_url} onChange={(e) => setContentForm({ ...contentForm, link_url: e.target.value })} placeholder="https://youtube.com/watch?v=..." className={inputClass} /></div>
                   <div className="sm:col-span-2"><label className={labelClass}>Description</label><textarea value={contentForm.description} onChange={(e) => setContentForm({ ...contentForm, description: e.target.value })} rows={2} className={`${inputClass} resize-none`} /></div>
-                  <div><label className={labelClass}>Thumbnail URL</label><input type="url" value={contentForm.image_url} onChange={(e) => setContentForm({ ...contentForm, image_url: e.target.value })} className={inputClass} /></div>
+                  <div>
+                    <label className={labelClass}>Thumbnail (optional)</label>
+                    <input type="url" value={contentForm.image_url} onChange={(e) => setContentForm({ ...contentForm, image_url: e.target.value })} placeholder="Paste an image URL or upload one" className={inputClass} />
+                    <input ref={thumbInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" id="thumb-upload" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleThumbnailUpload(f); }} />
+                    <label htmlFor="thumb-upload" className={`inline-block mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer ${uploadingThumb ? 'opacity-60 pointer-events-none' : ''}`}>{uploadingThumb ? '⏳ Uploading...' : '⬆️ Upload thumbnail image'}</label>
+                    {contentForm.image_url && <img src={contentForm.image_url} alt="Thumbnail preview" className="mt-2 h-16 rounded-lg object-cover" />}
+                  </div>
                   <div className="flex items-center gap-2 pt-4"><input type="checkbox" id="vid-pub" checked={contentForm.is_published} onChange={(e) => setContentForm({ ...contentForm, is_published: e.target.checked })} className="rounded" /><label htmlFor="vid-pub" className="text-sm text-gray-700">Publish on website</label></div>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={saveContent} disabled={contentSaving} className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60">{contentSaving ? 'Saving...' : 'Save Video'}</button>
-                  <button onClick={() => setShowContentForm(false)} className="border border-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold hover:border-gray-300 transition-colors">Cancel</button>
+                  <button onClick={() => { setShowContentForm(false); setEditingContent(null); }} className="border border-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold hover:border-gray-300 transition-colors">Cancel</button>
                 </div>
               </div>
             ) : (
@@ -1743,11 +1820,13 @@ function ContentItemList({ items, supabase, setContentItems, onEdit, emptyIcon, 
     <div className="space-y-2">
       {items.map((c) => (
         <div key={c.id} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-4">
-          {c.image_url && (
+          {c.image_url ? (
             <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
               <img src={c.image_url} alt={c.title} className="w-full h-full object-cover" />
             </div>
-          )}
+          ) : c.content_type === 'video' ? (
+            <div className="w-12 h-12 rounded-lg flex-shrink-0 bg-indigo-50 flex items-center justify-center text-xl">🎬</div>
+          ) : null}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <p className="font-semibold text-gray-900 text-sm">{c.title}</p>
