@@ -170,10 +170,12 @@ export default function ContentUpdatesSection() {
                 {isVideo ? (
                   <VideoThumb item={item} onPlay={() => setActiveVideo(item)} />
                 ) : isFlyer ? (
-                  <button type="button" onClick={() => setActiveImage(item)} aria-label={`View full flyer: ${item.title}`} className="group relative block w-full aspect-video overflow-hidden bg-gray-50 cursor-zoom-in">
-                    {/* Same uniform card size as the others; the full flyer opens on click */}
-                    <img src={item.image_url!} alt={item.title} className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" />
-                    <span className="absolute bottom-3 right-3 text-xs font-semibold bg-black/60 text-white px-2.5 py-1 rounded-full opacity-90 group-hover:bg-black/75 transition-colors">Tap to enlarge</span>
+                  <button type="button" onClick={() => setActiveImage(item)} aria-label={`View full flyer: ${item.title}`} className="group relative block w-full aspect-video overflow-hidden bg-gray-900 cursor-zoom-in">
+                    {/* Same uniform card size as the others. Blurred copy fills the frame, the full flyer sits on top uncropped. */}
+                    <img src={item.image_url!} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-80" />
+                    <div className="absolute inset-0 bg-black/25" />
+                    <img src={item.image_url!} alt={item.title} className="relative z-10 w-full h-full object-contain p-3 drop-shadow-2xl group-hover:scale-[1.03] transition-transform duration-300" />
+                    <span className="absolute bottom-3 right-3 z-20 text-xs font-semibold bg-black/60 text-white px-2.5 py-1 rounded-full opacity-90 group-hover:bg-black/75 transition-colors">Tap to enlarge</span>
                   </button>
                 ) : item.image_url ? (
                   <div className="aspect-video overflow-hidden">

@@ -48,7 +48,7 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <a
-            href="#services"
+            href="/#services"
             className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
           >
             Services
@@ -72,7 +72,7 @@ export default function Navbar() {
             Blog
           </a>
           <a
-            href="#about"
+            href="/about"
             className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
           >
             About
@@ -134,7 +134,7 @@ export default function Navbar() {
             {['Services', 'Countries', 'Scholarships', 'Blog', 'About']?.map((item) => (
               <a
                 key={item}
-                href={item === 'Services' ? '#services' : item === 'About' ? '#about' : `/${item?.toLowerCase()}`}
+                href={item === 'Services' ? '/#services' : `/${item?.toLowerCase()}`}
                 className="block font-medium text-gray-700 hover:text-indigo-600 py-2 transition-colors"
                 onClick={() => setMobileOpen(false)}
               >

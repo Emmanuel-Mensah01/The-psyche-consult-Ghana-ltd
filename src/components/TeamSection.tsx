@@ -1,29 +1,34 @@
 import React from 'react';
+import TeamAvatar from '@/components/TeamAvatar';
 
 const team = [
   {
-    emoji: '👨🏿‍💼',
+    color: 'from-indigo-500 to-purple-600',
+    // image: '/team/solomon-opoku.jpg',
     name: 'Solomon Opoku',
     role: 'CEO & Founder',
     bio: 'Visionary leader with extensive experience in international education consulting.',
     skills: ['University Selection', 'Career Counseling', 'Strategic Partnerships'],
   },
   {
-    emoji: '👩🏿‍💼',
+    color: 'from-purple-500 to-pink-500',
+    // image: '/team/esther-thompson.jpg',
     name: 'Esther Abeka Thompson',
     role: 'Deputy General Manager / Counselor',
     bio: "Expert counselor providing comprehensive guidance for students\' academic journeys.",
     skills: ['Student Counseling', 'Academic Planning', 'Career Development'],
   },
   {
-    emoji: '👨🏿‍💼',
+    color: 'from-blue-500 to-indigo-600',
+    // image: '/team/raphael-hanson.jpg',
     name: 'Raphael Hanson',
     role: 'Admissions / Visa Assistant Manager',
     bio: 'Specialist in admissions and visa processing with exceptional success rate.',
     skills: ['Visa Applications', 'Admissions Support', 'Documentation'],
   },
   {
-    emoji: '👨🏿‍💼',
+    color: 'from-teal-500 to-emerald-600',
+    // image: '/team/benjamin-anane-agyei.jpg',
     name: 'Benjamin Anane-Agyei',
     role: 'Test Prep Coordinator',
     bio: 'Expert test preparation coordinator helping students achieve their best scores.',
@@ -46,7 +51,9 @@ export default function TeamSection() {
               key={member?.name}
               className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all border border-gray-100"
             >
-              <div className="text-6xl mb-4 text-center">{member?.emoji}</div>
+              <div className="flex justify-center mb-4">
+                <TeamAvatar name={member?.name} colorClass={member?.color} className="w-28 h-28" image={(member as { image?: string })?.image} />
+              </div>
               <h3 className="text-xl font-bold text-gray-900 mb-1 text-center">{member?.name}</h3>
               <p className="text-indigo-600 font-semibold mb-3 text-center">{member?.role}</p>
               <p className="text-gray-600 text-sm mb-4">{member?.bio}</p>

@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import CEOTravelsSection from '@/components/CEOTravelsSection';
+import TeamAvatar from '@/components/TeamAvatar';
 import { createClient } from '@/lib/supabase/client';
 
 interface Testimonial {
@@ -31,7 +32,7 @@ const values = [
   {
     emoji: '🌍',
     title: 'Global Reach',
-    description: 'With partnerships across 10+ countries and 200+ universities, we open doors that most students don\'t know exist.',
+    description: 'With partner universities across the world, we open doors that most students don\'t know exist.',
   },
   {
     emoji: '📈',
@@ -42,49 +43,36 @@ const values = [
 
 const team = [
   {
-    name: 'Dr. Emmanuel Asante',
-    role: 'Founder & Lead Counselor',
-    bio: 'PhD in Education Policy from the University of Edinburgh. 12+ years guiding Ghanaian students to top universities worldwide.',
-    initials: 'EA',
-    color: 'bg-indigo-600',
+    name: 'Solomon Opoku',
+    role: 'CEO & Founder',
+    bio: 'Visionary leader with extensive experience in international education consulting.',
+    color: 'from-indigo-500 to-purple-600', // image: '/team/solomon-opoku.jpg',
   },
   {
-    name: 'Abena Mensah',
-    role: 'Head of UK & Europe Admissions',
-    bio: 'Former admissions officer at a Russell Group university. Expert in UCAS applications and UK visa processes.',
-    initials: 'AM',
-    color: 'bg-purple-600',
+    name: 'Esther Abeka Thompson',
+    role: 'Deputy General Manager / Counselor',
+    bio: 'Expert counselor providing comprehensive guidance for students\' academic journeys.',
+    color: 'from-purple-500 to-pink-500', // image: '/team/esther-thompson.jpg',
   },
   {
-    name: 'Kwame Boateng',
-    role: 'North America Specialist',
-    bio: 'MBA from University of Toronto. Specializes in US and Canadian university applications and scholarship hunting.',
-    initials: 'KB',
-    color: 'bg-blue-600',
+    name: 'Raphael Hanson',
+    role: 'Admissions / Visa Assistant Manager',
+    bio: 'Specialist in admissions and visa processing with exceptional success rate.',
+    color: 'from-blue-500 to-indigo-600', // image: '/team/raphael-hanson.jpg',
   },
   {
-    name: 'Efua Darko',
-    role: 'Visa & Immigration Advisor',
-    bio: 'Certified immigration consultant with a 97% visa approval rate across UK, Canada, Australia, and Schengen countries.',
-    initials: 'ED',
-    color: 'bg-teal-600',
+    name: 'Benjamin Anane-Agyei',
+    role: 'Test Prep Coordinator',
+    bio: 'Expert test preparation coordinator helping students achieve their best scores.',
+    color: 'from-teal-500 to-emerald-600', // image: '/team/benjamin-anane-agyei.jpg',
   },
-];
-
-const milestones = [
-  { year: '2015', event: 'Founded in Kumasi with a mission to democratize access to international education for Ghanaian students.' },
-  { year: '2017', event: 'Opened our Accra office and expanded services to include test preparation and visa counseling.' },
-  { year: '2019', event: 'Reached 200 successful student placements. Established direct partnerships with 50+ universities.' },
-  { year: '2021', event: 'Launched the online student portal, enabling students across Ghana to access our services remotely.' },
-  { year: '2023', event: 'Surpassed 500 student placements across 10 countries. Recognized as a top education consultancy in Ghana.' },
-  { year: '2025', event: 'Expanded partnerships to 200+ universities. Introduced one-on-one consultation booking and milestone tracking.' },
 ];
 
 const stats = [
   { value: '500+', label: 'Students Placed' },
-  { value: '200+', label: 'University Partners' },
-  { value: '10+', label: 'Countries' },
-  { value: '97%', label: 'Visa Success Rate' },
+  { value: '452+', label: 'Partner Universities' },
+  { value: '15+', label: 'Countries' },
+  { value: '98%', label: 'Success Rate' },
 ];
 
 const staticTestimonials: Testimonial[] = [
@@ -148,7 +136,7 @@ export default function AboutPage() {
               Ghana&apos;s Trusted Partner for <span className="text-indigo-300">International Education</span>
             </h1>
             <p className="text-xl text-indigo-100 leading-relaxed">
-              Since 2015, The Psyche Consult Ghana Ltd has been turning study abroad dreams into reality for hundreds of Ghanaian students. We combine deep expertise, genuine care, and global connections to give every student the best possible chance.
+              The Psyche Consult Ghana Ltd has been turning study abroad dreams into reality for hundreds of Ghanaian students. We combine deep expertise, genuine care, and global connections to give every student the best possible chance.
             </p>
           </div>
         </div>
@@ -179,22 +167,20 @@ export default function AboutPage() {
                 From the moment you walk through our doors (or log into our portal), you become part of The Psyche Consult Ghana Ltd family. We don&apos;t just process applications — we invest in your future.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Our team of experienced counselors, many of whom studied abroad themselves, understand the challenges and opportunities that come with international education. We use that knowledge to give you a genuine competitive edge.
+                Our team of experienced counselors understands the challenges and opportunities that come with international education. We use that knowledge to give you a genuine competitive edge.
               </p>
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-3xl transform rotate-2 opacity-20" />
               <div className="relative bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-3xl border border-indigo-100">
                 <div className="text-6xl mb-6">🎓</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Why We Started</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Led by Solomon Opoku</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">
-                  Our founder, Dr. Emmanuel Asante, experienced firsthand the confusion and misinformation that surrounded studying abroad in Ghana. After completing his PhD in Edinburgh, he returned home with one goal: to build the resource he wished had existed when he was applying.
+                  Our CEO &amp; Founder, Solomon Opoku, leads The Psyche Consult Ghana Ltd with one goal: helping Ghanaian students find the right university abroad, and get there with confidence.
                 </p>
                 <div className="bg-white p-4 rounded-2xl border border-indigo-100">
-                  <p className="text-indigo-700 font-semibold italic text-sm">
-                    &ldquo;Every student who walks through our doors has a dream. Our job is to make sure that dream has a plan.&rdquo;
-                  </p>
-                  <p className="text-gray-500 text-xs mt-2">— Dr. Emmanuel Asante, Founder</p>
+                  <p className="text-indigo-700 font-semibold text-sm">Solomon Opoku</p>
+                  <p className="text-gray-500 text-xs mt-1">CEO &amp; Founder</p>
                 </div>
               </div>
             </div>
@@ -228,14 +214,14 @@ export default function AboutPage() {
           <div className="text-center mb-14">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experienced counselors who have walked the path themselves and are dedicated to guiding you through yours.
+              Experienced counselors dedicated to guiding you through yours.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {team?.map((member) => (
               <div key={member?.name} className="text-center group">
-                <div className={`w-24 h-24 ${member?.color} rounded-2xl flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 group-hover:scale-105 transition-transform shadow-lg`}>
-                  {member?.initials}
+                <div className="flex justify-center mb-4 group-hover:scale-105 transition-transform">
+                  <TeamAvatar name={member?.name} colorClass={member?.color} image={(member as { image?: string })?.image} />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-1">{member?.name}</h3>
                 <p className="text-indigo-600 text-sm font-semibold mb-3">{member?.role}</p>
@@ -245,31 +231,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      {/* Timeline */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Journey</h2>
-            <p className="text-xl text-gray-600">A decade of impact, one student at a time.</p>
-          </div>
-          <div className="space-y-0">
-            {milestones?.map((m, i) => (
-              <div key={m?.year} className="flex gap-6 items-start">
-                <div className="flex flex-col items-center">
-                  <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                    {m?.year}
-                  </div>
-                  {i < milestones?.length - 1 && <div className="w-0.5 h-12 bg-indigo-200 mt-1" />}
-                </div>
-                <div className="pb-10">
-                  <p className="text-gray-700 leading-relaxed pt-3">{m?.event}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials — live from Supabase */}
       <section className="py-20 bg-white" id="testimonials">
         <div className="max-w-7xl mx-auto px-6">
