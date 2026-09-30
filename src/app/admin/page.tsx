@@ -1347,7 +1347,7 @@ export default function AdminDashboardPage() {
 }
 
 // ── Content Management Tab Component ─────────────────────────────────────────
-type ContentSubTab = 'testimonials' | 'videos' | 'flyers' | 'blog' | 'events' | 'other';
+type ContentSubTab = 'testimonials' | 'videos' | 'flyers' | 'travels' | 'blog' | 'events' | 'other';
 
 interface ContentManagementTabProps {
   supabase: ReturnType<typeof createClient>;
@@ -1384,6 +1384,8 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
   const flyerInputRef = useRef<HTMLInputElement>(null);
   const thumbInputRef = useRef<HTMLInputElement>(null);
   const testimonialVideoInputRef = useRef<HTMLInputElement>(null);
+  const testimonialThumbInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingTestimonialThumb, setUploadingTestimonialThumb] = useState(false);
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingTestimonialVideo, setUploadingTestimonialVideo] = useState(false);
 
@@ -1499,6 +1501,22 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     }
   };
 
+  // Thumbnail image for a testimonial video
+  const handleTestimonialThumbUpload = async (file: File) => {
+    setUploadingTestimonialThumb(true); setTestimonialError('');
+    try {
+      if (!file.type.startsWith('image/')) throw new Error('Thumbnail must be an image (JPG, PNG or WebP).');
+      if (file.size > 9 * 1024 * 1024) throw new Error('Thumbnail is too large. Maximum is 9 MB.');
+      const url = await uploadToBucket('content-media', 'testimonial-thumbs', file);
+      setTestimonialForm((f) => ({ ...f, thumbnail_url: url }));
+    } catch (err: unknown) {
+      setTestimonialError(err instanceof Error ? err.message : 'Thumbnail upload failed.');
+    } finally {
+      setUploadingTestimonialThumb(false);
+      if (testimonialThumbInputRef.current) testimonialThumbInputRef.current.value = '';
+    }
+  };
+
   // Video file for a testimonial (fills the Video URL field)
   const handleTestimonialVideoUpload = async (file: File) => {
     setUploadingTestimonialVideo(true); setTestimonialError('');
@@ -1515,10 +1533,38 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     }
   };
 
+  const travelInputRef = useRef<HTMLInputElement>(null);
+  const handleTravelUpload = async (files: FileList) => {
+    setUploadingFile(true); setUploadError(''); setUploadSuccess('');
+    let done = 0;
+    try {
+      for (const file of Array.from(files)) {
+        if (!file.type.startsWith('image/')) throw new Error(`"${file.name}" is not an image. Videos go in the Videos tab.`);
+        if (file.size > 9 * 1024 * 1024) throw new Error(`"${file.name}" is too large. Maximum is 9 MB per photo.`);
+        const url = await uploadToBucket('content-media', 'travels', file);
+        const title = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+        const { data, error: insErr } = await supabase.from('content_items').insert({
+          title, content_type: 'travel', image_url: url, link_url: null,
+          is_published: false, display_order: contentItems.length + done,
+        }).select().single();
+        if (insErr) throw insErr;
+        if (data) setContentItems((p) => [...p, data]);
+        done++;
+      }
+    } catch (err: unknown) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed. Please try again.');
+    } finally {
+      if (done > 0) { setUploadSuccess(`${done} photo${done > 1 ? 's' : ''} uploaded as drafts. Edit each caption, then click Draft to publish.`); setTimeout(() => setUploadSuccess(''), 8000); }
+      setUploadingFile(false);
+      if (travelInputRef.current) travelInputRef.current.value = '';
+    }
+  };
+
   const subTabs: { key: ContentSubTab; label: string; icon: string }[] = [
     { key: 'testimonials', label: 'Testimonials', icon: '⭐' },
     { key: 'videos', label: 'Videos', icon: '🎥' },
     { key: 'flyers', label: 'Flyers', icon: '📋' },
+    { key: 'travels', label: 'CEO Travels', icon: '✈️' },
     { key: 'blog', label: 'Blog Posts', icon: '✍️' },
     { key: 'events', label: 'Events', icon: '📅' },
     { key: 'other', label: 'Other', icon: '📌' },
@@ -1528,6 +1574,7 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
     testimonials: [],
     videos: ['video'],
     flyers: ['flyer'],
+    travels: ['travel'],
     blog: ['blog'],
     events: ['event'],
     other: ['announcement', 'scholarship', 'promo', 'news', 'faq'],
@@ -1542,6 +1589,7 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
       testimonials: 'announcement',
       videos: 'video',
       flyers: 'flyer',
+      travels: 'travel',
       blog: 'blog',
       events: 'event',
       other: 'announcement',
@@ -1607,7 +1655,13 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
                   <label htmlFor="testimonial-video-upload" className={`inline-block mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer ${uploadingTestimonialVideo ? 'opacity-60 pointer-events-none' : ''}`}>{uploadingTestimonialVideo ? '⏳ Uploading video...' : '⬆️ Or upload a video file'}</label>
                   {testimonialForm.video_url && <p className="text-xs text-green-600 mt-1 truncate">✓ Video attached</p>}
                 </div>
-                <div><label className={labelClass}>Thumbnail Image URL</label><input type="url" value={testimonialForm.thumbnail_url} onChange={(e) => setTestimonialForm({ ...testimonialForm, thumbnail_url: e.target.value })} placeholder="https://..." className={inputClass} /></div>
+                <div>
+                  <label className={labelClass}>Thumbnail Image (optional)</label>
+                  <input type="url" value={testimonialForm.thumbnail_url} onChange={(e) => setTestimonialForm({ ...testimonialForm, thumbnail_url: e.target.value })} placeholder="Paste a URL or upload one" className={inputClass} />
+                  <input ref={testimonialThumbInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" id="testimonial-thumb-upload" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleTestimonialThumbUpload(f); }} />
+                  <label htmlFor="testimonial-thumb-upload" className={`inline-block mt-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer ${uploadingTestimonialThumb ? 'opacity-60 pointer-events-none' : ''}`}>{uploadingTestimonialThumb ? '⏳ Uploading...' : '⬆️ Upload thumbnail image'}</label>
+                  {testimonialForm.thumbnail_url && <img src={testimonialForm.thumbnail_url} alt="Thumbnail preview" className="mt-2 h-16 rounded-lg object-cover" />}
+                </div>
                 <div className="sm:col-span-2"><label className={labelClass}>Quote / Review</label><textarea value={testimonialForm.quote} onChange={(e) => setTestimonialForm({ ...testimonialForm, quote: e.target.value })} rows={3} placeholder="Student's testimonial text..." className={`${inputClass} resize-none`} /></div>
                 <div className="flex items-center gap-2"><input type="checkbox" id="test-pub" checked={testimonialForm.is_published} onChange={(e) => setTestimonialForm({ ...testimonialForm, is_published: e.target.checked })} className="rounded" /><label htmlFor="test-pub" className="text-sm text-gray-700">Publish on website</label></div>
               </div>
@@ -1621,7 +1675,7 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
             <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-10 text-center">
               <p className="text-3xl mb-2">⭐</p>
               <p className="font-semibold text-gray-700 text-sm">No testimonials yet</p>
-              <p className="text-xs text-gray-400 mt-1">Add student testimonials with video links and quotes</p>
+              <p className="text-xs text-gray-400 mt-1">Add a student's name, then upload their video file (or paste a YouTube/Vimeo link), tick “Publish on website” and save</p>
             </div>
           )}
           <div className="space-y-2">
@@ -1746,6 +1800,45 @@ function ContentManagementTab({ supabase, testimonials, setTestimonials, content
           </div>
 
           <ContentItemList items={filteredContentItems} supabase={supabase} setContentItems={setContentItems} onEdit={(c) => { setEditingContent(c); setContentForm({ title: c.title, description: c.description || '', content_type: c.content_type, image_url: c.image_url || '', link_url: c.link_url || '', is_published: c.is_published, display_order: c.display_order, expires_at: c.expires_at ? c.expires_at.split('T')[0] : '' }); setContentError(''); setShowContentForm(true); }} emptyIcon="📋" emptyText="No flyers uploaded yet" />
+        </div>
+      )}
+
+      {/* ── CEO TRAVELS SUB-TAB ── */}
+      {contentSubTab === 'travels' && (
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border-2 border-dashed border-sky-200 p-6 text-center">
+            <div className="text-4xl mb-3">✈️</div>
+            <h3 className="font-bold text-gray-900 text-sm mb-1">Upload CEO Travel Photos</h3>
+            <p className="text-xs text-gray-500 mb-4">Select one or several JPG/PNG/WebP photos (max 9 MB each). They appear in a compact “CEO Travels” strip on the About page once published. Travel videos go in the Videos tab. After publishing, check it on the <a href="/about#ceo-travels" target="_blank" rel="noopener noreferrer" className="text-sky-600 font-semibold underline">About page</a>.</p>
+            {uploadError && <p className="text-red-600 text-xs mb-3">{uploadError}</p>}
+            {uploadSuccess && <p className="text-green-600 text-xs mb-3">{uploadSuccess}</p>}
+            <input ref={travelInputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" className="hidden" id="travel-upload"
+              onChange={(e) => { if (e.target.files && e.target.files.length > 0) handleTravelUpload(e.target.files); }} />
+            <label htmlFor="travel-upload"
+              className={`inline-flex items-center gap-2 bg-sky-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-sky-700 transition-colors ${uploadingFile ? 'opacity-60 pointer-events-none' : ''}`}>
+              {uploadingFile ? '⏳ Uploading...' : '⬆️ Upload Photos'}
+            </label>
+          </div>
+
+          {showContentForm && contentForm.content_type === 'travel' && (
+            <div className="bg-white rounded-2xl border border-sky-200 p-5 space-y-3">
+              <h3 className="font-bold text-gray-900 text-sm">Edit Photo</h3>
+              {contentError && <p className="text-red-600 text-xs">{contentError}</p>}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2"><label className={labelClass}>Caption * (e.g. Visiting Harvard University, USA)</label><input type="text" value={contentForm.title} onChange={(e) => setContentForm({ ...contentForm, title: e.target.value })} className={inputClass} /></div>
+                <div className="sm:col-span-2"><label className={labelClass}>Extra details (optional)</label><textarea value={contentForm.description} onChange={(e) => setContentForm({ ...contentForm, description: e.target.value })} rows={2} className={`${inputClass} resize-none`} /></div>
+                <div><label className={labelClass}>Display order (lower shows first)</label><input type="number" value={contentForm.display_order} onChange={(e) => setContentForm({ ...contentForm, display_order: Number(e.target.value) })} className={inputClass} /></div>
+                <div className="flex items-center gap-2 pt-4"><input type="checkbox" id="trv-pub" checked={contentForm.is_published} onChange={(e) => setContentForm({ ...contentForm, is_published: e.target.checked })} className="rounded" /><label htmlFor="trv-pub" className="text-sm text-gray-700">Publish on website</label></div>
+              </div>
+              {contentForm.image_url && <img src={contentForm.image_url} alt="Preview" className="h-28 rounded-lg object-cover" />}
+              <div className="flex gap-2">
+                <button onClick={saveContent} disabled={contentSaving} className="bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-sky-700 transition-colors disabled:opacity-60">{contentSaving ? 'Saving...' : 'Save Photo'}</button>
+                <button onClick={() => { setShowContentForm(false); setEditingContent(null); }} className="border border-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold hover:border-gray-300 transition-colors">Cancel</button>
+              </div>
+            </div>
+          )}
+
+          <ContentItemList items={filteredContentItems} supabase={supabase} setContentItems={setContentItems} onEdit={openContentEditor} emptyIcon="✈️" emptyText="No travel photos yet" />
         </div>
       )}
 

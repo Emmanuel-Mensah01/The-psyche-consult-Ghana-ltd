@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { getVideoSource } from '@/lib/video';
 
 interface Testimonial {
   id: string;
@@ -48,17 +49,7 @@ function VideoModal({ url, name, onClose }: { url: string; name: string; onClose
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
-  const isVimeo = url.includes('vimeo.com');
-
-  let embedUrl = url;
-  if (isYoutube) {
-    const match = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/);
-    if (match) embedUrl = `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
-  } else if (isVimeo) {
-    const match = url.match(/vimeo\.com\/(\d+)/);
-    if (match) embedUrl = `https://player.vimeo.com/video/${match[1]}?autoplay=1`;
-  }
+  const source = getVideoSource(url);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={onClose}>
@@ -67,10 +58,10 @@ function VideoModal({ url, name, onClose }: { url: string; name: string; onClose
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>
         <div className="aspect-video w-full">
-          {(isYoutube || isVimeo) ? (
-            <iframe src={embedUrl} title={`${name} testimonial`} className="w-full h-full" allow="autoplay; fullscreen" allowFullScreen />
+          {source.kind === 'file' ? (
+            <video src={source.url} controls autoPlay playsInline preload="auto" className="w-full h-full" title={`${name} testimonial`} />
           ) : (
-            <video src={url} controls autoPlay className="w-full h-full" title={`${name} testimonial`} />
+            <iframe src={source.embedUrl} title={`${name} testimonial`} className="w-full h-full" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen />
           )}
         </div>
         <div className="p-4 bg-gray-900">
@@ -131,11 +122,13 @@ export default function TestimonialsSection() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {videoItems.map((t) => (
                 <div key={t.id} className="group relative rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 aspect-video cursor-pointer shadow-lg hover:shadow-xl transition-all hover:-translate-y-1" onClick={() => setActiveVideo(t)}>
-                  {t.thumbnail_url ? (
-                    <img src={t.thumbnail_url} alt={`${t.student_name} video thumbnail`} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-60 transition-opacity" />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-800 to-purple-900" />
-                  )}
+                  {(() => {
+                    const src = getVideoSource(t.video_url!);
+                    const poster = t.thumbnail_url || src.thumbnail;
+                    if (poster) return <img src={poster} alt={`${t.student_name} video thumbnail`} className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-60 transition-opacity" />;
+                    if (src.kind === 'file') return <video src={`${src.url}#t=0.5`} preload="metadata" muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-70 pointer-events-none" />;
+                    return <div className="absolute inset-0 bg-gradient-to-br from-indigo-800 to-purple-900" />;
+                  })()}
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors border-2 border-white/50">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>

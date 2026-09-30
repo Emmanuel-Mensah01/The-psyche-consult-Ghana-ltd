@@ -75,6 +75,28 @@ function VideoModal({ item, onClose }: { item: ContentItem; onClose: () => void 
   );
 }
 
+function ImageLightbox({ item, onClose }: { item: ContentItem; onClose: () => void }) {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4" onClick={onClose} role="dialog" aria-modal="true" aria-label={item.title}>
+      <button onClick={onClose} aria-label="Close image" className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      </button>
+      <img src={item.image_url!} alt={item.title} className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" onClick={(e) => e.stopPropagation()} />
+    </div>
+  );
+}
+
 function VideoThumb({ item, onPlay }: { item: ContentItem; onPlay: () => void }) {
   const source = item.link_url ? getVideoSource(item.link_url) : null;
   // Poster priority: admin-supplied thumbnail, then YouTube's auto thumbnail, then first frame of the file itself.
@@ -101,6 +123,7 @@ export default function ContentUpdatesSection() {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState<ContentItem | null>(null);
+  const [activeImage, setActiveImage] = useState<ContentItem | null>(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -113,7 +136,7 @@ export default function ContentUpdatesSection() {
           .order('display_order', { ascending: true });
         if (data && data.length > 0) {
           const now = new Date();
-          const active = data.filter((item) => !item.expires_at || new Date(item.expires_at) > now);
+          const active = data.filter((item) => item.content_type !== 'travel' && (!item.expires_at || new Date(item.expires_at) > now));
           setItems(active);
         } else {
           setItems(staticItems);
@@ -141,10 +164,17 @@ export default function ContentUpdatesSection() {
           {items.map((item) => {
             const type = typeConfig[item.content_type] || typeConfig['announcement'];
             const isVideo = item.content_type === 'video' && !!item.link_url;
+            const isFlyer = item.content_type === 'flyer' && !!item.image_url;
             return (
               <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-0.5 border border-white">
                 {isVideo ? (
                   <VideoThumb item={item} onPlay={() => setActiveVideo(item)} />
+                ) : isFlyer ? (
+                  <button type="button" onClick={() => setActiveImage(item)} aria-label={`View full flyer: ${item.title}`} className="group relative block w-full aspect-video overflow-hidden bg-gray-50 cursor-zoom-in">
+                    {/* Same uniform card size as the others; the full flyer opens on click */}
+                    <img src={item.image_url!} alt={item.title} className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" />
+                    <span className="absolute bottom-3 right-3 text-xs font-semibold bg-black/60 text-white px-2.5 py-1 rounded-full opacity-90 group-hover:bg-black/75 transition-colors">Tap to enlarge</span>
+                  </button>
                 ) : item.image_url ? (
                   <div className="aspect-video overflow-hidden">
                     <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
@@ -187,6 +217,7 @@ export default function ContentUpdatesSection() {
         </div>
       </div>
 
+      {activeImage && <ImageLightbox item={activeImage} onClose={() => setActiveImage(null)} />}
       {activeVideo && <VideoModal item={activeVideo} onClose={() => setActiveVideo(null)} />}
     </section>
   );
