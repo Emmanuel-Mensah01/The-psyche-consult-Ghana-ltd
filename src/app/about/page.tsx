@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import CEOTravelsSection from '@/components/CEOTravelsSection';
 import TeamAvatar from '@/components/TeamAvatar';
 import { createClient } from '@/lib/supabase/client';
 
@@ -187,7 +186,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      <CEOTravelsSection />
       {/* Values */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">

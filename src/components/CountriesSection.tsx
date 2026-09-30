@@ -22,7 +22,7 @@ const staticCountries = [
   { flag: '🇳🇱', name: 'Netherlands', universities: 7, slug: 'netherlands' },
   { flag: '🇮🇪', name: 'Ireland', universities: 10, slug: 'ireland' },
   { flag: '🇳🇿', name: 'New Zealand', universities: 10, slug: 'new-zealand' },
-  { flag: '🇸🇬', name: 'Singapore', universities: 3, slug: 'singapore' },
+  { flag: '🇪🇸', name: 'Spain', universities: 23, slug: 'spain' },
 ];
 
 function toSlug(name: string): string {
@@ -48,7 +48,10 @@ export default function CountriesSection() {
         ]);
         const all = cRes.data || [];
         const featured = all.filter((c) => c.is_featured);
-        setDbCountries((featured.length > 0 ? featured : all).slice(0, 10));
+        const base = (featured.length > 0 ? featured : all).filter((c) => c.name.toLowerCase() !== 'singapore');
+        const spain = all.find((c) => c.name.toLowerCase() === 'spain');
+        if (spain && !base.some((c) => c.id === spain.id)) base.push(spain);
+        setDbCountries(base.slice(0, 10));
 
         const tally: Record<string, number> = {};
         (uRes.data || []).forEach((u: { country_id: string | null }) => {
@@ -78,7 +81,7 @@ export default function CountriesSection() {
       : staticCountries.map((c) => ({ key: c.slug, flag: c.flag, name: c.name, slug: c.slug, universities: c.universities }));
 
   return (
-    <section id="countries" className="py-24 bg-gray-50">
+    <section id="countries" className="py-28 bg-indigo-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Study Destinations</h2>
@@ -90,7 +93,7 @@ export default function CountriesSection() {
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
             {[...Array(10)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl h-28 animate-pulse border border-gray-100" />
+              <div key={i} className="bg-indigo-100 rounded-2xl h-40 animate-pulse" />
             ))}
           </div>
         ) : (
@@ -99,11 +102,11 @@ export default function CountriesSection() {
               <a
                 key={country.key}
                 href={`/countries/${country.slug}`}
-                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1 border border-gray-100 text-center group"
+                className="group relative overflow-hidden rounded-2xl bg-indigo-900 p-6 text-left ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:ring-gold-400/60 hover:shadow-2xl hover:shadow-indigo-900/30"
               >
-                <div className="mb-3 flex justify-center"><Flag emoji={country.flag} width={64} /></div>
-                <h3 className="font-bold text-gray-900 mb-1 group-hover:text-indigo-600">{country.name}</h3>
-                <p className="text-sm text-gray-600">{country.universities} Universities</p>
+                <div className="mb-8 flex justify-between items-start"><Flag emoji={country.flag} width={64} /><span className="text-gold-400 text-xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden>↗</span></div>
+                <h3 className="font-display text-xl font-semibold text-white mb-1">{country.name}</h3>
+                <p className="text-sm text-gold-300">{country.universities} partner universities</p>
               </a>
             ))}
           </div>
@@ -112,7 +115,7 @@ export default function CountriesSection() {
         <div className="text-center">
           <a
             href="/countries"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-full font-bold hover:bg-indigo-700 transition-all transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-indigo-900 text-white px-8 py-3.5 rounded-full font-bold hover:bg-gold-500 hover:text-indigo-900 transition-all transform hover:scale-105"
           >
             Explore All Countries
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">

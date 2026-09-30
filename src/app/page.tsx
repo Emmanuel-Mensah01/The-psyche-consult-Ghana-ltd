@@ -8,6 +8,7 @@ import HowItWorksSection from '@/components/HowItWorksSection';
 import CountriesSection from '@/components/CountriesSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import ContentUpdatesSection from '@/components/ContentUpdatesSection';
+import CEOTravelsSection from '@/components/CEOTravelsSection';
 import TeamSection from '@/components/TeamSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
 import FAQSection from '@/components/FAQSection';
@@ -26,6 +27,7 @@ export default function HomePage() {
       <ServicesSection />
       <HowItWorksSection />
       <CountriesSection />
+      <CEOTravelsSection preview />
       <ContentUpdatesSection />
       <TestimonialsSection />
       <TeamSection />
