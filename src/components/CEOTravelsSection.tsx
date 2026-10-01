@@ -50,7 +50,7 @@ export default function CEOTravelsSection({ preview = false }: { preview?: boole
     <button
       type="button" onClick={() => setActive(p)} aria-label={`View photo: ${p.title}`}
       className={`group relative overflow-hidden rounded-[1.75rem] bg-indigo-800 text-left ring-1 ring-white/10 ${
-        preview ? 'shrink-0 snap-start w-[76vw] sm:w-[330px] aspect-[3/4]' : `aspect-[4/5] ${i === 0 ? 'lg:col-span-2 lg:row-span-2 lg:aspect-auto' : ''}`
+        preview ? 'shrink-0 snap-start w-[76vw] sm:w-[330px] aspect-[3/4]' : `aspect-[4/5] ${i === 0 ? 'lg:col-span-2 lg:row-span-2 lg:aspect-auto lg:min-h-[560px]' : ''}`
       }`}
     >
       <img src={p.image_url!} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]" />
