@@ -21,7 +21,7 @@ export default function Navbar() {
           : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div className="max-w-[1440px] mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
         <a className="flex items-center gap-2" href="/">
           <svg
@@ -41,12 +41,12 @@ export default function Navbar() {
             <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
           </svg>
           <span className={`text-xl font-bold ${scrolled ? 'text-gray-900' : 'text-white'}`}>
-            The Psyche Consult Ghana Ltd
+            The Psyche Consult<span className="hidden 2xl:inline"> Ghana Ltd</span>
           </span>
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden xl:flex items-center gap-6 whitespace-nowrap">
           <a
             href="/#services"
             className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
@@ -108,7 +108,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden"
+          className="xl:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -141,7 +141,7 @@ export default function Navbar() {
       </div>
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white shadow-xl border-t border-gray-100">
+        <div className="xl:hidden bg-white shadow-xl border-t border-gray-100">
           <div className="px-6 py-4 space-y-3">
             {['Services', 'Countries', 'CEO Travels', 'Careers', 'Scholarships', 'Blog', 'About']?.map((item) => (
               <a

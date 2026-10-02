@@ -14,13 +14,15 @@ interface ContentItem {
   expires_at: string | null;
 }
 
+const gold = { color: 'text-gold-600', bg: 'bg-gold-300/30' };
+const navy = { color: 'text-indigo-800', bg: 'bg-indigo-100' };
 const typeConfig: Record<string, { icon: string; color: string; bg: string }> = {
-  announcement: { icon: '📢', color: 'text-blue-700', bg: 'bg-blue-100' },
-  scholarship: { icon: '🎓', color: 'text-purple-700', bg: 'bg-purple-100' },
-  event: { icon: '📅', color: 'text-green-700', bg: 'bg-green-100' },
-  promo: { icon: '🎉', color: 'text-orange-700', bg: 'bg-orange-100' },
-  video: { icon: '🎬', color: 'text-rose-700', bg: 'bg-rose-100' },
-  flyer: { icon: '📋', color: 'text-indigo-700', bg: 'bg-indigo-100' },
+  announcement: { icon: '📢', ...navy },
+  scholarship: { icon: '🎓', ...gold },
+  event: { icon: '📅', ...navy },
+  promo: { icon: '🎉', ...gold },
+  video: { icon: '🎬', ...navy },
+  flyer: { icon: '📋', ...navy },
 };
 
 const staticItems: ContentItem[] = [
@@ -109,9 +111,9 @@ function VideoThumb({ item, onPlay }: { item: ContentItem; onPlay: () => void })
       ) : source && source.kind === 'file' ? (
         <video src={`${source.url}#t=0.5`} preload="metadata" muted playsInline className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
       ) : null}
-      <div className="absolute inset-0 bg-black/25 group-hover:bg-black/35 transition-colors" />
+      <div className="absolute inset-0 bg-indigo-900/30 group-hover:bg-indigo-900/40 transition-colors" />
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-16 h-16 bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/60 group-hover:bg-white/40 group-hover:scale-110 transition-all">
+        <div className="w-16 h-16 bg-indigo-900/60 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-gold-400 group-hover:bg-gold-400/40 group-hover:scale-110 transition-all">
           <PlayIcon />
         </div>
       </div>
@@ -153,67 +155,61 @@ export default function ContentUpdatesSection() {
   if (loading || items.length === 0) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <section className="py-28 bg-indigo-50" id="updates">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Latest Updates</h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">Stay informed about scholarships, events, and opportunities</p>
+        <div className="max-w-2xl mb-14">
+          <p className="text-gold-600 font-bold text-sm tracking-widest uppercase mb-4">News &amp; Opportunities</p>
+          <h2 className="font-display text-4xl md:text-6xl font-semibold text-indigo-900">Latest Updates</h2>
+          <p className="mt-5 text-lg text-gray-600">Stay informed about scholarships, events, and opportunities.</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Masonry: every card keeps its natural height, so tall flyers show in full with no empty frame. */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6">
           {items.map((item) => {
             const type = typeConfig[item.content_type] || typeConfig['announcement'];
             const isVideo = item.content_type === 'video' && !!item.link_url;
             const isFlyer = item.content_type === 'flyer' && !!item.image_url;
             return (
-              <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-0.5 border border-white">
+              <article key={item.id} className="group/card break-inside-avoid mb-6 overflow-hidden rounded-3xl bg-white ring-1 ring-indigo-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-900/10">
                 {isVideo ? (
                   <VideoThumb item={item} onPlay={() => setActiveVideo(item)} />
                 ) : isFlyer ? (
-                  <button type="button" onClick={() => setActiveImage(item)} aria-label={`View full flyer: ${item.title}`} className="group relative block w-full aspect-video overflow-hidden bg-gray-900 cursor-zoom-in">
-                    {/* Same uniform card size as the others. Blurred copy fills the frame, the full flyer sits on top uncropped. */}
-                    <img src={item.image_url!} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-80" />
-                    <div className="absolute inset-0 bg-black/25" />
-                    <img src={item.image_url!} alt={item.title} className="relative z-10 w-full h-full object-contain p-3 drop-shadow-2xl group-hover:scale-[1.03] transition-transform duration-300" />
-                    <span className="absolute bottom-3 right-3 z-20 text-xs font-semibold bg-black/60 text-white px-2.5 py-1 rounded-full opacity-90 group-hover:bg-black/75 transition-colors">Tap to enlarge</span>
+                  <button type="button" onClick={() => setActiveImage(item)} aria-label={`View full flyer: ${item.title}`} className="group relative block w-full cursor-zoom-in overflow-hidden bg-indigo-100">
+                    <img src={item.image_url!} alt={item.title} loading="lazy" className="block w-full h-auto transition-transform duration-700 group-hover:scale-[1.03]" />
+                    <span className="absolute bottom-4 right-4 text-xs font-bold bg-indigo-900/85 text-white px-3.5 py-1.5 rounded-full backdrop-blur-sm group-hover:bg-gold-400 group-hover:text-indigo-900 transition-colors">Tap to enlarge</span>
                   </button>
                 ) : item.image_url ? (
-                  <div className="aspect-video overflow-hidden">
-                    <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
-                  </div>
+                  <img src={item.image_url} alt={item.title} loading="lazy" className="block w-full h-auto" />
                 ) : (
-                  <div className={`aspect-video flex items-center justify-center text-6xl ${type.bg} bg-opacity-30`}>
-                    {type.icon}
-                  </div>
+                  <div className={`aspect-[16/9] flex items-center justify-center text-6xl ${type.bg}`}>{type.icon}</div>
                 )}
-                <div className="p-5">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${type.bg} ${type.color}`}>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`text-xs font-bold px-3 py-1 rounded-full ${type.bg} ${type.color}`}>
                       {type.icon} {item.content_type.charAt(0).toUpperCase() + item.content_type.slice(1)}
                     </span>
                     {item.expires_at && (
-                      <span className="text-xs text-orange-600 font-medium">
+                      <span className="text-xs text-orange-600 font-semibold">
                         Ends {new Date(item.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                       </span>
                     )}
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 leading-snug">{item.title}</h3>
-                  {item.description && <p className="text-sm text-gray-600 line-clamp-3">{item.description}</p>}
+                  <h3 className="font-display text-xl font-semibold text-indigo-900 leading-snug">{item.title}</h3>
+                  {item.description && <p className="mt-3 text-sm text-gray-600 leading-relaxed line-clamp-4">{item.description}</p>}
                   {isVideo ? (
-                    <button type="button" onClick={() => setActiveVideo(item)} className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <button type="button" onClick={() => setActiveVideo(item)} className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-indigo-700 hover:text-gold-600 transition-colors">
                       Watch Video
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3" /></svg>
                     </button>
                   ) : (
                     item.link_url && (
-                      <a href={item.link_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
-                        Learn More
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                      <a href={item.link_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-indigo-700 hover:text-gold-600 transition-colors">
+                        Learn More <span aria-hidden>→</span>
                       </a>
                     )
                   )}
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
