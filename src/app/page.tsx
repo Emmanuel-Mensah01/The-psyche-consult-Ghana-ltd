@@ -11,7 +11,6 @@ import ContentUpdatesSection from '@/components/ContentUpdatesSection';
 import CEOTravelsSection from '@/components/CEOTravelsSection';
 import TeamSection from '@/components/TeamSection';
 import UniversitiesSection from '@/components/UniversitiesSection';
-import PartnerSchoolsSection from '@/components/PartnerSchoolsSection';
 import InternshipBanner from '@/components/InternshipBanner';
 import FAQSection from '@/components/FAQSection';
 import AboutSection from '@/components/AboutSection';
@@ -34,7 +33,6 @@ export default function HomePage() {
       <TestimonialsSection />
       <TeamSection />
       <UniversitiesSection />
-      <PartnerSchoolsSection />
       <InternshipBanner />
       <FAQSection />
       <AboutSection />
