@@ -19,9 +19,8 @@ FROM public.study_countries c
 WHERE u.country_id = c.id
   AND lower(c.name) IN ('united states','united states of america','usa','us');
 
--- 2. Load the new list (re-activates a school if it already exists for that country, otherwise inserts it)
-CREATE TEMP TABLE new_schools (name text, country text, ord int) ON COMMIT DROP;
-INSERT INTO new_schools (name, country, ord) VALUES
+-- 2. Load the new list in one statement: re-activate a school if it already exists for that country, otherwise insert it
+WITH new_schools(name, country, ord) AS (VALUES
   ('Adelphi University', 'US', 1000),
   ('American Collegiate DC', 'US', 1001),
   ('American Collegiate LA', 'US', 1002),
@@ -143,30 +142,26 @@ INSERT INTO new_schools (name, country, ord) VALUES
   ('Saskatchewan Colleges', 'Canada', 1118),
   ('Barcelona Technology School', 'Spain', 1119),
   ('Neuro Business School', 'Spain', 1120),
-  ('Grand Sud', 'France', 1121);
-
-CREATE TEMP TABLE new_schools_resolved ON COMMIT DROP AS
-SELECT n.name, n.ord, c.id AS country_id, c.name AS country_name
-FROM new_schools n
-JOIN public.study_countries c ON (
-  (n.country = 'US' AND lower(c.name) IN ('united states','united states of america','usa','us'))
-  OR (n.country <> 'US' AND lower(c.name) = lower(n.country))
-);
-
-UPDATE public.universities u
-SET is_partner = true, is_active = true, display_order = r.ord
-FROM new_schools_resolved r
-WHERE u.country_id = r.country_id AND lower(u.name) = lower(r.name);
-
+  ('Grand Sud', 'France', 1121)
+),
+resolved AS (
+  SELECT n.name, n.ord, c.id AS country_id, c.name AS country_name
+  FROM new_schools n
+  JOIN public.study_countries c ON (
+    (n.country = 'US' AND lower(c.name) IN ('united states','united states of america','usa','us'))
+    OR (n.country <> 'US' AND lower(c.name) = lower(n.country))
+  )
+),
+reactivated AS (
+  UPDATE public.universities u
+  SET is_partner = true, is_active = true, display_order = r.ord
+  FROM resolved r
+  WHERE u.country_id = r.country_id AND lower(u.name) = lower(r.name)
+  RETURNING u.id
+)
 INSERT INTO public.universities (name, country_id, location, is_partner, is_active, display_order)
 SELECT r.name, r.country_id, r.country_name, true, true, r.ord
-FROM new_schools_resolved r
+FROM resolved r
 WHERE NOT EXISTS (
   SELECT 1 FROM public.universities u WHERE u.country_id = r.country_id AND lower(u.name) = lower(r.name)
 );
-
--- 3. Check: should list 113 United States schools (106 from the sheet + 7 MSM), 6 Canada, 2 Spain, 1 France
-SELECT c.name AS country, count(*) AS partner_schools
-FROM public.universities u JOIN public.study_countries c ON c.id = u.country_id
-WHERE u.is_partner AND u.is_active AND u.display_order >= 1000
-GROUP BY c.name ORDER BY 2 DESC;
