@@ -70,8 +70,8 @@ const team = [
 
 const stats = [
   { value: '500+', label: 'Students Placed' },
-  { value: '452+', label: 'Partner Universities' },
-  { value: '15+', label: 'Countries' },
+  { value: '122+', label: 'Partner Universities' },
+  { value: '4', label: 'Countries' },
   { value: '98%', label: 'Success Rate' },
 ];
 
@@ -345,4 +345,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
 

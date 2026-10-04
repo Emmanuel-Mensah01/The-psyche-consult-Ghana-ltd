@@ -76,7 +76,7 @@ export default function CountriesSection() {
           flag: c.flag_emoji || staticFor(c.name)?.flag || '🌍',
           name: c.name,
           slug: toSlug(c.name),
-          universities: Math.max(counts[c.id] || 0, staticFor(c.name)?.universities || 0),
+          universities: counts[c.id] || 0,
         }))
       : staticCountries.map((c) => ({ key: c.slug, flag: c.flag, name: c.name, slug: c.slug, universities: c.universities }));
 
@@ -98,7 +98,7 @@ export default function CountriesSection() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-            {cards.map((country) => (
+            {cards.filter((c) => c.universities > 0).map((country) => (
               <a
                 key={country.key}
                 href={`/countries/${country.slug}`}
@@ -128,3 +128,4 @@ export default function CountriesSection() {
     </section>
   );
 }
+
