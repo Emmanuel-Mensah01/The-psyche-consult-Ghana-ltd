@@ -51,7 +51,8 @@ const team = [
     name: 'Esther Abeka Thompson',
     role: 'Deputy General Manager / Counselor',
     bio: 'Expert counselor providing comprehensive guidance for students\' academic journeys.',
-    color: 'from-purple-500 to-pink-500', // image: '/team/esther-thompson.jpg',
+    color: 'from-purple-500 to-pink-500',
+    image: '/team/esther-thompson.jpg',
   },
   {
     name: 'Raphael Hanson',
@@ -344,3 +345,4 @@ export default function AboutPage() {
     </div>
   );
 }
+
