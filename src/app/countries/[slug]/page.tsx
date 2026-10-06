@@ -17,7 +17,17 @@ interface DbCountry {
 interface Uni {
   id: string;
   name: string;
+  partner_network?: string | null;
+  course_types?: string | null;
 }
+
+// Partner networks, in the order they are shown. The key matches universities.partner_network.
+const NETWORKS: { key: string; title: string }[] = [
+  { key: 'MSM', title: 'MSM Partner Schools' },
+  { key: 'Leverage', title: 'Leverage Partner Schools' },
+  { key: 'INTO Global', title: 'INTO Global Partner Schools' },
+];
+const slugId = (k: string) => 'network-' + k.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 const toSlug = (name: string) => name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
@@ -42,15 +52,28 @@ export default function CountryDetailPage() {
         const match = (countries || []).find((c) => toSlug(c.name) === slug) || null;
         setCountry(match);
         if (match) {
-          const { data } = await supabase
+          const first = await supabase
             .from('universities')
-            .select('id, name')
+            .select('id, name, partner_network, course_types')
             .eq('country_id', match.id)
             .eq('is_active', true)
             .eq('is_partner', true)
             .order('name', { ascending: true })
             .limit(1000);
-          setUnis(data || []);
+          let rows = first.data as Uni[] | null;
+          if (first.error) {
+            // partner_network columns not added yet (migration not run): fall back to the plain list
+            const res = await supabase
+              .from('universities')
+              .select('id, name')
+              .eq('country_id', match.id)
+              .eq('is_active', true)
+              .eq('is_partner', true)
+              .order('name', { ascending: true })
+              .limit(1000);
+            rows = res.data as Uni[] | null;
+          }
+          setUnis(rows || []);
         }
       } finally {
         setLoading(false);
@@ -62,6 +85,20 @@ export default function CountryDetailPage() {
     const q = query.trim().toLowerCase();
     return q ? unis.filter((u) => u.name.toLowerCase().includes(q)) : unis;
   }, [unis, query]);
+
+  // Group the schools by partner network; schools with no network (added later by an admin) go under "Other".
+  const groups = useMemo(() => {
+    const known = NETWORKS.map((n) => ({
+      id: slugId(n.key),
+      title: n.title,
+      items: shown.filter((u) => u.partner_network === n.key),
+    }));
+    const other = shown.filter((u) => !NETWORKS.some((n) => n.key === u.partner_network));
+    const anyNetwork = known.some((g) => g.items.length > 0);
+    const list = known.filter((g) => g.items.length > 0);
+    if (other.length > 0) list.push({ id: 'network-other', title: anyNetwork ? 'Other Partner Universities' : '', items: other });
+    return list;
+  }, [shown]);
 
   const name = info?.name || country?.name || 'Study Destination';
   const flag = info?.flag || country?.flag_emoji || '🌍';
@@ -216,6 +253,20 @@ export default function CountryDetailPage() {
             )}
           </div>
 
+          {!loading && groups.filter((g) => g.title).length > 1 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {groups.map((g) => (
+                <a
+                  key={g.id}
+                  href={'#' + g.id}
+                  className="px-4 py-2 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold hover:bg-indigo-100 transition-colors"
+                >
+                  {g.title} · {g.items.length}
+                </a>
+              ))}
+            </div>
+          )}
+
           {loading ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {[...Array(6)].map((_, i) => (
@@ -227,10 +278,33 @@ export default function CountryDetailPage() {
               {query ? 'No universities match your search.' : 'Partner universities for this destination will be listed here soon.'}
             </p>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {shown.map((u) => (
-                <div key={u.id} className="bg-white rounded-xl border border-gray-200 p-4 text-sm font-semibold text-gray-900">
-                  🎓 {u.name}
+            <div className="space-y-10">
+              {groups.map((g) => (
+                <div key={g.id} id={g.id} className="scroll-mt-24">
+                  {g.title && (
+                    <div className="flex items-baseline gap-3 mb-4 pb-2 border-b-2 border-indigo-100">
+                      <h3 className="text-xl font-bold text-indigo-900">{g.title}</h3>
+                      <span className="text-sm text-gray-500">
+                        {g.items.length} {g.items.length === 1 ? 'school' : 'schools'}
+                      </span>
+                    </div>
+                  )}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {g.items.map((u) => (
+                      <div key={u.id} className="bg-white rounded-xl border border-gray-200 p-4">
+                        <p className="text-sm font-semibold text-gray-900">🎓 {u.name}</p>
+                        {u.course_types && (
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {u.course_types.split('·').map((t) => (
+                              <span key={t} className="bg-indigo-50 text-indigo-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                                {t.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
