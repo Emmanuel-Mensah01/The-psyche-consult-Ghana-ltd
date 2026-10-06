@@ -45,7 +45,8 @@ const team = [
     name: 'Solomon Opoku',
     role: 'CEO & Founder',
     bio: 'Visionary leader with extensive experience in international education consulting.',
-    color: 'from-indigo-500 to-purple-600', // image: '/team/solomon-opoku.jpg',
+    color: 'from-indigo-500 to-purple-600',
+    image: '/team/solomon-opoku.jpg',
   },
   {
     name: 'Esther Abeka Thompson',
@@ -53,6 +54,13 @@ const team = [
     bio: 'Expert counselor providing comprehensive guidance for students\' academic journeys.',
     color: 'from-purple-500 to-pink-500',
     image: '/team/esther-thompson.jpg',
+  },
+  {
+    name: 'Rita Owiredu',
+    role: 'Executive Secretary',
+    bio: 'Keeps the office running smoothly, coordinating schedules, communication and student enquiries.',
+    color: 'from-rose-500 to-orange-500',
+    image: '/team/rita-owiredu.jpg',
   },
   {
     name: 'Raphael Hanson',
@@ -76,7 +84,7 @@ const stats = [
 ];
 
 const staticTestimonials: Testimonial[] = [
-  { id: 's1', student_name: 'Gifty Sarpong', destination: 'Now in USA', university: 'Hawaii Atlantic University', video_url: null, thumbnail_url: null, quote: 'Mr. Solomon Opoku was very helpful and gave me excellent choices of Universities that fit my budget and future education path. Very informative, knowledgeable, and professional!', display_order: 0 },
+  { id: 's1', student_name: 'Gifty Sarpong', destination: 'Now in USA', university: 'Hellenic American University', video_url: null, thumbnail_url: null, quote: 'Mr. Solomon Opoku was very helpful and gave me excellent choices of Universities that fit my budget and future education path. Very informative, knowledgeable, and professional!', display_order: 0 },
   { id: 's2', student_name: 'Joel Nana Appiah Obeng', destination: 'Now in USA', university: 'Fisher College - Boston, Massachusetts', video_url: null, thumbnail_url: null, quote: 'The Psyche Consult Ghana Ltd gave me valuable advice and made the application process easier. Good people doing good deeds deserve recognition!', display_order: 1 },
   { id: 's3', student_name: 'Lawrencia Yeboah', destination: 'Now in USA', university: 'Weber State University - Utah', video_url: null, thumbnail_url: null, quote: 'The Psyche Consult Ghana Ltd is proactive, detail-oriented, and trustworthy. They made my study abroad dream a breeze. I highly recommend them!', display_order: 2 },
   { id: 's4', student_name: 'Alexander Dumakor', destination: 'Now in Canada', university: 'Trent University', video_url: null, thumbnail_url: null, quote: 'I got my Canadian visa through The Psyche Consult Ghana Ltd Team. They guided me through all the process. I recommend them to anyone who would like quality education abroad.', display_order: 3 },
@@ -119,7 +127,55 @@ export default function AboutPage() {
   const displayTestimonials = testimonials.length > 0 ? testimonials : staticTestimonials;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-scre
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    en bg-white">
       <Navbar />
       {/* Hero */}
       <section className="relative pt-32 pb-24 bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 overflow-hidden">
@@ -216,9 +272,9 @@ export default function AboutPage() {
               Experienced counselors dedicated to guiding you through yours.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {team?.map((member) => (
-              <div key={member?.name} className="text-center group">
+              <div key={member?.name} className="text-center group w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1.5rem)]">
                 <div className="flex justify-center mb-4 group-hover:scale-105 transition-transform">
                   <TeamAvatar name={member?.name} colorClass={member?.color} image={(member as { image?: string })?.image} />
                 </div>

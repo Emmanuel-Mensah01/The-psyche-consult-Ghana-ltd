@@ -4,8 +4,9 @@ type Member = { name: string; role: string; bio: string; skills: string[]; image
 
 // To add a photo: save a 4:5 portrait in public/team/ and set image: '/team/file.jpg' on the member.
 const team: Member[] = [
-  { name: 'Solomon Opoku', role: 'CEO & Founder', bio: 'Visionary leader with extensive experience in international education consulting.', skills: ['University Selection', 'Career Counseling', 'Strategic Partnerships'] },
+  { name: 'Solomon Opoku', role: 'CEO & Founder', bio: 'Visionary leader with extensive experience in international education consulting.', skills: ['University Selection', 'Career Counseling', 'Strategic Partnerships'], image: '/team/solomon-opoku.jpg' },
   { name: 'Esther Abeka Thompson', role: 'Deputy General Manager / Counselor', bio: "Expert counselor providing comprehensive guidance for students' academic journeys.", skills: ['Student Counseling', 'Academic Planning', 'Career Development'], image: '/team/esther-thompson.jpg' },
+  { name: 'Rita Owiredu', role: 'Executive Secretary', bio: 'Keeps the office running smoothly, coordinating schedules, communication and student enquiries.', skills: ['Office Administration', 'Scheduling', 'Client Communication'], image: '/team/rita-owiredu.jpg' },
   { name: 'Raphael Hanson', role: 'Admissions / Visa Assistant Manager', bio: 'Specialist in admissions and visa processing with exceptional success rate.', skills: ['Visa Applications', 'Admissions Support', 'Documentation'] },
   { name: 'Benjamin Anane-Agyei', role: 'Test Prep Coordinator', bio: 'Expert test preparation coordinator helping students achieve their best scores.', skills: ['IELTS', 'GRE', 'GMAT', 'Test Strategy'] },
 ];
@@ -20,9 +21,9 @@ export default function TeamSection() {
           <h2 className="font-display text-4xl md:text-6xl font-semibold text-indigo-900">Meet Our Team</h2>
           <p className="mt-5 text-xl text-gray-600">Expert counselors dedicated to your success.</p>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {team.map((m) => (
-            <article key={m.name} className="group">
+            <article key={m.name} className="group w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-indigo-800 to-indigo-600 ring-1 ring-indigo-900/10 shadow-xl shadow-indigo-900/10">
                 {m.image ? (
                   <img src={m.image} alt={m.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
