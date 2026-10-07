@@ -18,6 +18,11 @@ import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
+export const metadata = {
+  alternates: { canonical: '/' },
+  openGraph: { url: '/' },
+};
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">

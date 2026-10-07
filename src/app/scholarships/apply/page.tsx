@@ -394,7 +394,7 @@ export default function ScholarshipApplyPage() {
           </div>
 
           {/* Trust signals */}
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div className="mt-8 grid grid-cols-3 gap-2 sm:gap-4 text-center">
             {[
               { icon: '🔒', label: 'Secure & Private', sub: 'Your data is protected' },
               { icon: '⚡', label: 'Fast Review', sub: '3–5 business days' },

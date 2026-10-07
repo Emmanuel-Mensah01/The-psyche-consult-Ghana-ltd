@@ -108,9 +108,10 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          className="xl:hidden"
+          className="xl:hidden -mr-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -380,7 +380,7 @@ export default function CountriesPage() {
           >
             ← Back to Home
           </Link>
-          <h1 className="text-5xl font-bold mb-4">Study Destinations</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4">Study Destinations</h1>
           <p className="text-xl text-indigo-100 max-w-3xl">
             Explore world-class education opportunities across the globe. We help you find the perfect country that matches your goals, budget, and career aspirations.
           </p>
@@ -435,7 +435,7 @@ export default function CountriesPage() {
 
                     {stats && (
                       <>
-                        <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
                           <div className="text-center p-3 bg-white rounded-lg">
                             <div className="text-sm font-bold text-gray-900">{stats.students}</div>
                             <div className="text-xs text-gray-600">Students</div>
@@ -489,7 +489,7 @@ export default function CountriesPage() {
                     </div>
                   </div>
                   <p className="text-gray-700 mb-4">{country.description}</p>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
                     <div className="text-center p-3 bg-white rounded-lg">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-indigo-600 mx-auto mb-1" aria-hidden="true">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" />

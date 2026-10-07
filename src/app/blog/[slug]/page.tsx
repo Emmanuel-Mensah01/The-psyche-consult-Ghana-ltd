@@ -15,11 +15,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) {
-    return { title: 'Article Not Found | The Psyche Consult Ghana Ltd' };
+    return { title: 'Article Not Found', robots: { index: false } };
   }
   return {
-    title: `${post.title} | The Psyche Consult Ghana Ltd`,
+    title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: {
+      type: 'article' as const,
+      url: `/blog/${slug}`,
+      title: post.title,
+      description: post.excerpt,
+      siteName: 'The Psyche Consult Ghana Ltd',
+      locale: 'en_GH',
+    },
+    twitter: { card: 'summary_large_image' as const, title: post.title, description: post.excerpt },
   };
 }
 

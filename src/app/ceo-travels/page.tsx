@@ -5,8 +5,9 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import CEOTravelsSection from '@/components/CEOTravelsSection';
 
 export const metadata = {
-  title: 'CEO Travels | The Psyche Consult Ghana Ltd',
+  title: 'CEO Travels: Visits to Universities & Education Events Abroad',
   description: "Moments from our CEO's visits to universities and education events abroad.",
+  alternates: { canonical: '/ceo-travels' },
 };
 
 export default function CEOTravelsPage() {

@@ -5,8 +5,9 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import InternshipForm from '@/components/InternshipForm';
 
 export const metadata = {
-  title: 'Careers & Internships | The Psyche Consult Ghana Ltd',
+  title: 'Careers & Internships',
   description: 'Internship opportunities at The Psyche Consult for current students. Apply online.',
+  alternates: { canonical: '/careers' },
 };
 
 const tracks = [
