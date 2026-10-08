@@ -22,11 +22,27 @@ export default function HeroSection() {
         />
         <div className="absolute inset-0 bg-indigo-900/10" />
       </div>
+      {/* Phone: photo as the background, anchored at the bottom and fading up into the navy behind the text */}
+      <div
+        className="lg:hidden absolute inset-x-0 bottom-0 h-[340px]"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%)',
+        }}
+      >
+        <img
+          src="/assets/images/hero-ambassadors-900.jpg"
+          alt="Two Psyche Consult study abroad ambassadors in branded T-shirts at our office in Ghana"
+          className="w-full h-full object-cover object-[50%_30%]"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-indigo-900/10" />
+      </div>
       {/* Light shade behind the menu so the links stay readable over the photo */}
       <div className="hidden lg:block absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-indigo-900/60 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-indigo-900 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-16 lg:h-40 bg-gradient-to-t from-indigo-900 to-transparent" />
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pt-32 pb-24 grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto w-full px-6 pt-32 pb-[320px] lg:pb-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
           <p className="inline-flex items-center gap-3 text-gold-300 font-semibold text-sm tracking-wide mb-8">
             <span className="h-px w-10 bg-gold-400" /> Your gateway to global education
@@ -44,18 +60,6 @@ export default function HeroSection() {
             <a href="#services" className="border border-white/40 text-white px-9 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-indigo-900 transition-all text-center">
               Learn More
             </a>
-          </div>
-
-          {/* Mobile: photo shown as its own card under the buttons */}
-          <div className="lg:hidden mt-10 rounded-3xl overflow-hidden shadow-2xl shadow-black/40 ring-1 ring-white/20">
-            <img
-              src="/assets/images/hero-ambassadors-900.jpg"
-              alt="Two Psyche Consult study abroad ambassadors in branded T-shirts at our office in Ghana"
-              className="w-full h-auto"
-              width={900}
-              height={600}
-              fetchPriority="high"
-            />
           </div>
         </div>
 
