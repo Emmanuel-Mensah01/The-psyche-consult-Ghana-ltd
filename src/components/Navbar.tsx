@@ -99,7 +99,7 @@ export default function Navbar() {
             href="/booking"
             className={`border-2 px-5 py-2 rounded-full font-semibold transition-all text-sm ${
               scrolled
-                ? 'border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white' : 'border-gold-400 text-gold-300 hover:bg-gold-400 hover:text-indigo-900'
+                ? 'border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white' : 'border-gold-400 bg-gold-400 text-indigo-900 hover:bg-gold-300 hover:border-gold-300'
             }`}
           >
             Book Now

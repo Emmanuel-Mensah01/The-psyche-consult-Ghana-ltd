@@ -89,7 +89,7 @@ const staticTestimonials: Testimonial[] = [
   { id: 's3', student_name: 'Lawrencia Yeboah', destination: 'Now in USA', university: 'Weber State University - Utah', video_url: null, thumbnail_url: null, quote: 'The Psyche Consult Ghana Ltd is proactive, detail-oriented, and trustworthy. They made my study abroad dream a breeze. I highly recommend them!', display_order: 2 },
   { id: 's4', student_name: 'Alexander Dumakor', destination: 'Now in Canada', university: 'Trent University', video_url: null, thumbnail_url: null, quote: 'I got my Canadian visa through The Psyche Consult Ghana Ltd Team. They guided me through all the process. I recommend them to anyone who would like quality education abroad.', display_order: 3 },
   { id: 's5', student_name: 'Kinsky', destination: 'Now in UK', university: 'University of Huddersfield', video_url: null, thumbnail_url: null, quote: 'The Psyche Consult Ghana Ltd really helped me achieve my aim of coming to the UK. I recommend them to everyone who would like to work or study abroad.', display_order: 4 },
-  { id: 's6', student_name: 'Rita Owuredu', destination: 'Now in UK', university: 'Brunel University - London', video_url: null, thumbnail_url: null, quote: 'If you want to study outside the country, look no further than The Psyche Consult Ghana Ltd. Today, with their help, I am in the UK!', display_order: 5 },
+  { id: 's6', student_name: 'Rita Owiredu', destination: 'Now in UK', university: 'Brunel University - London', video_url: null, thumbnail_url: null, quote: 'If you want to study outside the country, look no further than The Psyche Consult Ghana Ltd. Today, with their help, I am in the UK!', display_order: 5 },
 ];
 
 const StarIcon = () => (
