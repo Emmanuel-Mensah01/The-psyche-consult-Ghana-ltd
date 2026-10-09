@@ -26,7 +26,8 @@ export default function Footer() {
               </svg>
               <span className="text-xl font-bold">The Psyche Consult Ghana Ltd</span>
             </div>
-            <p className="text-gray-400 mb-4">Your trusted partner for international education in Ghana.</p>
+            <p className="text-gray-400 mb-2">Your trusted partner for international education in Ghana.</p>
+            <p className="text-sm italic text-gold-300 mb-4">&ldquo;Inspired Solutions, A Lasting Impact&rdquo;</p>
             <div className="flex gap-3">
               <a className="text-indigo-400 hover:text-indigo-300 transition-colors text-sm" href="/student-portal">
                 Student Login
