@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
+import MottoVisionMission from '@/components/MottoVisionMission';
 import LeadCaptureSection from '@/components/LeadCaptureSection';
 import ServicesSection from '@/components/ServicesSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -29,6 +30,7 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <StatsSection />
+      <MottoVisionMission />
       <LeadCaptureSection />
       <ServicesSection />
       <HowItWorksSection />
