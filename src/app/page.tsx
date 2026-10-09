@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
 import MottoVisionMission from '@/components/MottoVisionMission';
+import CoreValues from '@/components/CoreValues';
 import LeadCaptureSection from '@/components/LeadCaptureSection';
 import ServicesSection from '@/components/ServicesSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -31,6 +32,7 @@ export default function HomePage() {
       <HeroSection />
       <StatsSection />
       <MottoVisionMission />
+      <CoreValues />
       <LeadCaptureSection />
       <ServicesSection />
       <HowItWorksSection />

@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import TeamAvatar from '@/components/TeamAvatar';
+import CoreValues from '@/components/CoreValues';
 import { createClient } from '@/lib/supabase/client';
 
 interface Testimonial {
@@ -255,6 +256,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <CoreValues />
 
       {/* Story */}
       <section className="py-20 bg-white">
