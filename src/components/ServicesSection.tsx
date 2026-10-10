@@ -9,6 +9,8 @@ interface SubService {
 interface Service {
   icon: React.ReactNode;
   title: string;
+  image: string;
+  stock: string;
   description: string;
   details: string;
   highlights?: string[];
@@ -23,6 +25,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Travel and Tour',
+    image: '/assets/services/travel-and-tour.jpg',
+    stock: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=75',
     description: 'Our core study-abroad service, guiding you from admission to arrival',
     details:
       'Our flagship service, covering everything a student or traveller needs — from choosing the right university, through testing and applications, to visa approval, and on to guided tourism once you arrive.',
@@ -72,6 +76,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Hospitality Management',
+    image: '/assets/services/hospitality-management.jpg',
+    stock: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=75',
     description: 'Professional management support for hotels, guesthouses, and hospitality businesses',
     details:
       'We support hotels, guesthouses, and short-let properties with the systems and standards needed to run a smooth, guest-ready operation.',
@@ -89,6 +95,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Psychotherapy Services',
+    image: '/assets/services/psychotherapy.jpg',
+    stock: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=75',
     description: 'Confidential, professional mental health and emotional wellbeing support',
     details:
       'A safe, confidential space to work through life\'s challenges with a qualified professional, whether you\'re dealing with stress, a major transition, or simply need someone to talk to.',
@@ -110,6 +118,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Hotel Booking and Flight Ticketing',
+    image: '/assets/services/hotel-and-flights.jpg',
+    stock: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=900&q=75',
     description: 'Fast, reliable hotel reservations and flight ticket bookings for personal, family, or business travel',
     details:
       'Whether you\'re travelling for business, leisure, or family reasons, we handle the logistics — reliable bookings, competitive rates, and support if plans change.',
@@ -127,6 +137,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Professional Counseling',
+    image: '/assets/services/counseling.jpg',
+    stock: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=75',
     description: 'Guidance and support for personal, academic, and career decisions',
     details:
       'One-on-one guidance for the big decisions in life — whether you\'re choosing a career path, weighing a course of study, or working through a personal goal.',
@@ -145,6 +157,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Training and Youth Development',
+    image: '/assets/services/youth-training.jpg',
+    stock: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=75',
     description: 'Skills training and development programmes empowering young people for the future',
     details:
       'Practical skills training and mentorship designed to help young people build real, usable capabilities for work and life.',
@@ -163,6 +177,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'International Recruitment Services',
+    image: '/assets/services/recruitment.jpg',
+    stock: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=75',
     description: 'Connecting qualified candidates with legitimate employment opportunities abroad',
     details:
       'We connect job-ready candidates with legitimate employers abroad, handling the vetting and paperwork so both sides can move with confidence.',
@@ -180,6 +196,8 @@ const services: Service[] = [
       </svg>
     ),
     title: 'Construction and Real Estate',
+    image: '/assets/services/real-estate.jpg',
+    stock: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=75',
     description: 'Property development, Airbnb management, and apartment renting services',
     details:
       'From listing and managing Airbnb properties to helping you find or rent an apartment, we support both property owners and tenants through the process.',
@@ -295,32 +313,42 @@ export default function ServicesSection() {
               key={service?.title}
               type="button"
               onClick={() => setActiveService(service)}
-              className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 text-left w-full"
+              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 text-left w-full min-h-[380px] flex flex-col justify-end bg-indigo-900"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                {service?.icon}
+              {/* Photo background: your own file in /public/assets/services wins; otherwise the stock photo; otherwise the navy gradient */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                style={{ backgroundImage: `url(${service.image}), url(${service.stock}), linear-gradient(135deg, #0c2559, #17408f)` }}
+                aria-hidden
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/95 via-indigo-900/65 to-indigo-900/25" aria-hidden />
+
+              <div className="relative z-10 p-8 pt-32">
+                <div className="w-14 h-14 bg-white/15 backdrop-blur-sm ring-1 ring-white/25 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform text-white">
+                  {service?.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">{service?.title}</h3>
+                <p className="text-indigo-100 mb-4">{service?.description}</p>
+
+                {service?.subServices && (
+                  <ul className="space-y-2 pt-4 border-t border-white/20">
+                    {service.subServices.map((sub) => (
+                      <li key={sub.name} className="flex items-center gap-2 text-sm text-white/90">
+                        <span className="text-gold-300 font-bold">→</span>
+                        <span>{sub.name}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <span className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-gold-300 group-hover:text-white transition-colors">
+                  Learn more
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{service?.title}</h3>
-              <p className="text-gray-600 mb-4">{service?.description}</p>
-
-              {service?.subServices && (
-                <ul className="space-y-2 pt-4 border-t border-gray-100">
-                  {service.subServices.map((sub) => (
-                    <li key={sub.name} className="flex items-center gap-2 text-sm text-gray-700">
-                      <span className="text-indigo-600 font-bold">→</span>
-                      <span>{sub.name}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <span className="inline-flex items-center gap-1.5 mt-4 text-sm font-semibold text-indigo-600 group-hover:text-indigo-800 transition-colors">
-                Learn more
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14" />
-                  <path d="m12 5 7 7-7 7" />
-                </svg>
-              </span>
             </button>
           ))}
         </div>
