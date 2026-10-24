@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import OfficeMap from '@/components/OfficeMap';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -189,7 +190,7 @@ export default function ContactSection() {
               <p className="text-gray-600 font-semibold mb-2">Kumasi Office:</p>
               <p className="text-gray-600 mb-3">Tanoso Station, Opposite MultiCredit</p>
               <p className="text-gray-600 font-semibold mb-2">Accra Office:</p>
-              <p className="text-gray-600">Flower St. Tabora No.3, Adjacent Orthodox Church</p>
+              <p className="text-gray-600">Flower St. Tabora No.3, Adjacent Orthodox Church, Lapaz, Accra</p>
             </div>
 
             {/* WhatsApp */}
@@ -213,6 +214,8 @@ export default function ContactSection() {
             </div>
           </div>
         </div>
+
+        <OfficeMap />
       </div>
     </section>
   );
