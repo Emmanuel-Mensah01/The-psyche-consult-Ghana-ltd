@@ -1,9 +1,40 @@
 @import './tailwind.css';
 
 /* Mobile polish */
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
 img, video { max-width: 100%; }
 /* iOS Safari zooms the page when a field's font is under 16px; keep fields at 16px on phones */
 @media (max-width: 767px) {
   input:not([type='checkbox']):not([type='radio']), select, textarea { font-size: 16px !important; }
+}
+
+/* Motion */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
+.marquee-track { display: flex; width: max-content; animation: marquee var(--marquee-duration, 40s) linear infinite; will-change: transform; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-reverse .marquee-track { animation-direction: reverse; }
+
+@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.09); } }
+.kenburns { animation: kenburns 22s ease-in-out infinite alternate; will-change: transform; }
+
+/* Slow zoom on the hero photo (works on the existing hero without touching its code) */
+div:has(> img[src^="/assets/images/hero-ambassadors"]) { overflow: hidden; }
+img[src^="/assets/images/hero-ambassadors"] { animation: kenburns 28s ease-in-out infinite alternate; }
+
+/* Scroll reveal: only applied by script to elements that start below the fold */
+.reveal-hidden { opacity: 0; transform: translateY(32px); transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal-hidden.is-visible { opacity: 1; transform: none; }
+
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Gentle pulse on the WhatsApp button */
+@keyframes wa-pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); } 70% { box-shadow: 0 0 0 18px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+a[aria-label="Chat on WhatsApp"] { animation: wa-pulse 2.8s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track, .kenburns, img[src^="/assets/images/hero-ambassadors"], a[aria-label="Chat on WhatsApp"] { animation: none !important; }
+  .reveal-hidden { opacity: 1 !important; transform: none !important; transition: none !important; }
 }

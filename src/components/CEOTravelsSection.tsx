@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useReveal } from '@/lib/useReveal';
 import { createClient } from '@/lib/supabase/client';
 
 interface TravelPhoto { id: string; title: string; description: string | null; image_url: string | null; }
@@ -20,6 +21,96 @@ function Lightbox({ photo, onClose }: { photo: TravelPhoto; onClose: () => void 
         <p className="font-display text-xl text-white">{photo.title}</p>
         {photo.description && <p className="text-indigo-200 text-sm mt-2">{photo.description}</p>}
       </div>
+    </div>
+  );
+}
+
+function Card({ p, i, preview, onOpen, hidden = false }: { p: TravelPhoto; i: number; preview: boolean; onOpen: (p: TravelPhoto) => void; hidden?: boolean }) {
+  const ref = useReveal<HTMLButtonElement>(preview ? 0 : (i % 4) * 90);
+  return (
+    <button
+      ref={ref}
+      type="button" onClick={() => onOpen(p)} aria-label={`View photo: ${p.title}`}
+      aria-hidden={hidden || undefined} tabIndex={hidden ? -1 : undefined}
+      className={`group relative overflow-hidden rounded-[1.75rem] bg-indigo-800 text-left ring-1 ring-white/10 ${
+        preview ? 'shrink-0 w-[76vw] sm:w-[330px] aspect-[3/4]' : `aspect-[4/5] ${i === 0 ? 'lg:col-span-2 lg:row-span-2 lg:aspect-auto lg:min-h-[560px]' : ''}`
+      }`}
+    >
+      {/* hover zoom on the wrapper, slow drifting "Ken Burns" motion on the photo itself */}
+      <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]">
+        <img
+          src={p.image_url!} alt={hidden ? '' : p.title} loading="lazy"
+          className="kenburns w-full h-full object-cover"
+          style={{ animationDelay: `-${(i * 4) % 20}s`, animationDirection: i % 2 ? 'alternate-reverse' : 'alternate' }}
+        />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900 via-indigo-900/30 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 p-6">
+        <span className="block h-[3px] w-10 bg-gold-400 mb-4 transition-all duration-500 group-hover:w-20" />
+        <p className="font-display text-white text-lg md:text-xl font-semibold leading-snug">{p.title}</p>
+        {p.description && <p className="text-indigo-200 text-sm mt-2 line-clamp-2">{p.description}</p>}
+      </div>
+    </button>
+  );
+}
+
+/** Homepage rail: glides on its own, pauses the moment someone touches or hovers it, and can still be swiped. */
+function AutoRail({ list, onOpen }: { list: TravelPhoto[]; onOpen: (p: TravelPhoto) => void }) {
+  const railRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el || list.length < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let pos = el.scrollLeft;
+    let paused = false;
+    let inView = false;
+    let resume: ReturnType<typeof setTimeout> | undefined;
+    let raf = 0;
+    const speed = 0.55; // pixels per frame, a calm glide
+
+    const step = () => {
+      if (!paused && inView) {
+        pos += speed;
+        const half = el.scrollWidth / 2;
+        if (pos >= half) pos -= half;
+        el.scrollLeft = pos;
+      }
+      raf = requestAnimationFrame(step);
+    };
+    const pause = () => { paused = true; if (resume) clearTimeout(resume); };
+    const play = () => { if (resume) clearTimeout(resume); resume = setTimeout(() => { pos = el.scrollLeft; paused = false; }, 1600); };
+    const onScroll = () => {
+      const half = el.scrollWidth / 2;
+      if (paused) {
+        if (el.scrollLeft >= half) el.scrollLeft -= half; // keep manual swiping endless too
+        pos = el.scrollLeft;
+      }
+    };
+    const io = new IntersectionObserver(([e]) => { inView = e.isIntersecting; }, { threshold: 0.1 });
+    io.observe(el);
+    el.addEventListener('pointerenter', pause);
+    el.addEventListener('pointerleave', play);
+    el.addEventListener('touchstart', pause, { passive: true });
+    el.addEventListener('touchend', play, { passive: true });
+    el.addEventListener('focusin', pause);
+    el.addEventListener('focusout', play);
+    el.addEventListener('scroll', onScroll, { passive: true });
+    raf = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(raf); if (resume) clearTimeout(resume); io.disconnect();
+      el.removeEventListener('pointerenter', pause); el.removeEventListener('pointerleave', play);
+      el.removeEventListener('touchstart', pause); el.removeEventListener('touchend', play);
+      el.removeEventListener('focusin', pause); el.removeEventListener('focusout', play);
+      el.removeEventListener('scroll', onScroll);
+    };
+  }, [list.length]);
+
+  // Two copies of the list make the loop seamless.
+  return (
+    <div ref={railRef} className="no-scrollbar flex gap-5 overflow-x-auto pb-4 -mx-6 px-6">
+      {list.map((p, i) => <Card key={p.id} p={p} i={i} preview onOpen={onOpen} />)}
+      {list.length > 1 && list.map((p, i) => <Card key={p.id + '-dup'} p={p} i={i} preview onOpen={onOpen} hidden />)}
     </div>
   );
 }
@@ -46,22 +137,6 @@ export default function CEOTravelsSection({ preview = false }: { preview?: boole
   if (preview && photos.length === 0) return null;
   const list = preview ? photos.slice(0, 8) : photos;
 
-  const Card = ({ p, i }: { p: TravelPhoto; i: number }) => (
-    <button
-      type="button" onClick={() => setActive(p)} aria-label={`View photo: ${p.title}`}
-      className={`group relative overflow-hidden rounded-[1.75rem] bg-indigo-800 text-left ring-1 ring-white/10 ${
-        preview ? 'shrink-0 snap-start w-[76vw] sm:w-[330px] aspect-[3/4]' : `aspect-[4/5] ${i === 0 ? 'lg:col-span-2 lg:row-span-2 lg:aspect-auto lg:min-h-[560px]' : ''}`
-      }`}
-    >
-      <img src={p.image_url!} alt={p.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.06]" />
-      <div className="absolute inset-0 bg-gradient-to-t from-indigo-900 via-indigo-900/30 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 p-6">
-        <span className="block h-[3px] w-10 bg-gold-400 mb-4 transition-all duration-500 group-hover:w-20" />
-        <p className="font-display text-white text-lg md:text-xl font-semibold leading-snug">{p.title}</p>
-        {p.description && <p className="text-indigo-200 text-sm mt-2 line-clamp-2">{p.description}</p>}
-      </div>
-    </button>
-  );
 
   return (
     <section id="ceo-travels" className={preview ? 'py-28 bg-indigo-900' : 'pb-28 bg-indigo-900'}>
@@ -80,9 +155,9 @@ export default function CEOTravelsSection({ preview = false }: { preview?: boole
         ) : list.length === 0 ? (
           <p className="text-indigo-200 text-lg">New travel photos are coming soon.</p>
         ) : preview ? (
-          <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6">{list.map((p, i) => <Card key={p.id} p={p} i={i} />)}</div>
+          <AutoRail list={list} onOpen={setActive} />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">{list.map((p, i) => <Card key={p.id} p={p} i={i} />)}</div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">{list.map((p, i) => <Card key={p.id} p={p} i={i} preview={false} onOpen={setActive} />)}</div>
         )}
       </div>
       {active && <Lightbox photo={active} onClose={() => setActive(null)} />}

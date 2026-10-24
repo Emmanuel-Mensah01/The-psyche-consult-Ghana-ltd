@@ -4,6 +4,9 @@ import HeroSection from '@/components/HeroSection';
 import StatsSection from '@/components/StatsSection';
 import MottoVisionMission from '@/components/MottoVisionMission';
 import CoreValues from '@/components/CoreValues';
+import MarqueeStrip from '@/components/MarqueeStrip';
+import UniversityMarquee from '@/components/UniversityMarquee';
+import Reveal from '@/components/Reveal';
 import LeadCaptureSection from '@/components/LeadCaptureSection';
 import ServicesSection from '@/components/ServicesSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
@@ -31,21 +34,23 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <StatsSection />
-      <MottoVisionMission />
-      <CoreValues />
-      <LeadCaptureSection />
-      <ServicesSection />
-      <HowItWorksSection />
-      <CountriesSection />
+      <MarqueeStrip />
+      <Reveal><MottoVisionMission /></Reveal>
+      <Reveal><CoreValues /></Reveal>
+      <Reveal><LeadCaptureSection /></Reveal>
+      <Reveal><ServicesSection /></Reveal>
+      <Reveal><HowItWorksSection /></Reveal>
+      <Reveal><CountriesSection /></Reveal>
       <CEOTravelsSection preview />
-      <ContentUpdatesSection />
-      <TestimonialsSection />
-      <TeamSection />
-      <UniversitiesSection />
-      <InternshipBanner />
-      <FAQSection />
-      <AboutSection />
-      <ContactSection />
+      <Reveal><ContentUpdatesSection /></Reveal>
+      <Reveal><TestimonialsSection /></Reveal>
+      <Reveal><TeamSection /></Reveal>
+      <UniversityMarquee />
+      <Reveal><UniversitiesSection /></Reveal>
+      <Reveal><InternshipBanner /></Reveal>
+      <Reveal><FAQSection /></Reveal>
+      <Reveal><AboutSection /></Reveal>
+      <Reveal><ContactSection /></Reveal>
       <Footer />
       <WhatsAppButton />
     </div>
