@@ -9,9 +9,15 @@ const team: Member[] = [
   { name: 'Rita Owiredu', role: 'Executive Secretary', bio: 'Keeps the office running smoothly, coordinating schedules, communication and student enquiries.', skills: ['Office Administration', 'Scheduling', 'Client Communication'], image: '/team/rita-owiredu.jpg' },
   { name: 'Raphael Hanson', role: 'Admissions / Visa Assistant Manager', bio: 'Specialist in admissions and visa processing with exceptional success rate.', skills: ['Visa Applications', 'Admissions Support', 'Documentation'] },
   { name: 'Benjamin Anane-Agyei', role: 'Test Prep Coordinator', bio: 'Expert test preparation coordinator helping students achieve their best scores.', skills: ['IELTS', 'GRE', 'GMAT', 'Test Strategy'] },
+  { name: 'Florence Missah', role: 'Senior Enrollment Officer', bio: 'Guides students through admissions and enrollment, from first application to arrival on campus.', skills: ['Enrollment', 'Admissions Support', 'Applications'] },
+  { name: 'Kunadu Ama Augustina', role: 'Senior Marketing Officer', bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.', skills: ['Marketing', 'Outreach', 'Brand & Social Media'] },
+  { name: 'Caleb Eyram Kofi Bakuyeya', role: 'Enrollment Officer', bio: 'Supports students through enrollment, documentation and onboarding.', skills: ['Enrollment', 'Documentation', 'Student Support'] },
 ];
 
-const initials = (n: string) => n.split(' ').map((w) => w[0]).slice(0, 2).join('');
+const initials = (n: string) => {
+  const w = n.trim().split(/\s+/);
+  return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase();
+};
 
 export default function TeamSection() {
   return (

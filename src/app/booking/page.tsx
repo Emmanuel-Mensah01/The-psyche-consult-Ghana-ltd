@@ -8,24 +8,24 @@ import { createClient } from '@/lib/supabase/client';
 
 const counselors = [
   {
-    name: 'Dr. Emmanuel Osei',
+    name: 'Solomon Opoku',
     specialty: 'University Selection & Career Counseling',
     emoji: '👨🏿‍💼',
   },
   {
-    name: 'Sarah Mensah',
+    name: 'Esther Abeka Thompson',
     specialty: 'Application Strategy & Essay Review',
     emoji: '👩🏿‍💼',
   },
   {
-    name: 'Michael Boateng',
+    name: 'Rita Owiredu',
     specialty: 'Visa Applications & Interview Prep',
-    emoji: '👨🏿‍💼',
+    emoji: '👩🏿‍💼',
   },
   {
-    name: 'Grace Adjei',
+    name: 'Benjamin Anane-Agyei',
     specialty: 'IELTS, GRE & GMAT Preparation',
-    emoji: '👩🏿‍💼',
+    emoji: '👨🏿‍💼',
   },
 ];
 

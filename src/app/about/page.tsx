@@ -75,6 +75,24 @@ const team = [
     bio: 'Expert test preparation coordinator helping students achieve their best scores.',
     color: 'from-teal-500 to-emerald-600', // image: '/team/benjamin-anane-agyei.jpg',
   },
+  {
+    name: 'Florence Missah',
+    role: 'Senior Enrollment Officer',
+    bio: 'Guides students through admissions and enrollment, from first application to arrival on campus.',
+    color: 'from-emerald-500 to-teal-600',
+  },
+  {
+    name: 'Kunadu Ama Augustina',
+    role: 'Senior Marketing Officer',
+    bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.',
+    color: 'from-amber-500 to-orange-500',
+  },
+  {
+    name: 'Caleb Eyram Kofi Bakuyeya',
+    role: 'Enrollment Officer',
+    bio: 'Supports students through enrollment, documentation and onboarding.',
+    color: 'from-sky-500 to-blue-600',
+  },
 ];
 
 const stats = [
