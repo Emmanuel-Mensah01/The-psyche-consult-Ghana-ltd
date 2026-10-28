@@ -18,7 +18,7 @@ const counselors = [
     emoji: '👩🏿‍💼',
   },
   {
-    name: 'Rita Owiredu',
+    name: 'Solomon Opoku / Raphael Hanson',
     specialty: 'Visa Applications & Interview Prep',
     emoji: '👩🏿‍💼',
   },
