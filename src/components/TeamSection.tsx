@@ -10,7 +10,7 @@ const team: Member[] = [
   { name: 'Raphael Hanson', role: 'Admissions / Visa Assistant Manager', bio: 'Specialist in admissions and visa processing with exceptional success rate.', skills: ['Visa Applications', 'Admissions Support', 'Documentation'] },
   { name: 'Benjamin Anane-Agyei', role: 'Test Prep Coordinator', bio: 'Expert test preparation coordinator helping students achieve their best scores.', skills: ['IELTS', 'GRE', 'GMAT', 'Test Strategy'] },
   { name: 'Florence Missah', role: 'Senior Enrollment Officer', bio: 'Guides students through admissions and enrollment, from first application to arrival on campus.', skills: ['Enrollment', 'Admissions Support', 'Applications'] },
-  { name: 'Kunadu Ama Augustina', role: 'Senior Marketing Officer', bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.', skills: ['Marketing', 'Outreach', 'Brand & Social Media'] },
+  { name: 'Konadu Ama Augustina', role: 'Senior Marketing Officer', bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.', skills: ['Marketing', 'Outreach', 'Brand & Social Media'] },
   { name: 'Caleb Eyram Kofi Bakuyeya', role: 'Enrollment Officer', bio: 'Supports students through enrollment, documentation and onboarding.', skills: ['Enrollment', 'Documentation', 'Student Support'] },
 ];
 

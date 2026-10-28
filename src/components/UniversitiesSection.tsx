@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import LocalPartners from '@/components/LocalPartners';
 
 interface University {
   id: string;
@@ -74,6 +75,7 @@ export default function UniversitiesSection() {
   const displayCount = totalCount !== null && totalCount > 0 ? `${totalCount}+` : '452+';
 
   return (
+    <>
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
@@ -116,5 +118,7 @@ export default function UniversitiesSection() {
         </div>
       </div>
     </section>
+    <LocalPartners />
+    </>
   );
 }

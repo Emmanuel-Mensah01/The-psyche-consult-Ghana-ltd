@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { createClient } from '@/lib/supabase/client';
 import Flag from '@/components/Flag';
+import LocalPartners from '@/components/LocalPartners';
 
 interface Country {
   id: string;
@@ -134,6 +135,8 @@ export default function UniversitiesPage() {
           </p>
         </div>
       </div>
+
+      <LocalPartners />
 
       <div className="max-w-5xl mx-auto px-6 py-12">
         <input
