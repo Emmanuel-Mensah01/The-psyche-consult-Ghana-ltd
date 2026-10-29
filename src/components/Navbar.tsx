@@ -46,7 +46,7 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden xl:flex items-center gap-6 whitespace-nowrap">
+        <div className="hidden xl:flex items-center gap-4 2xl:gap-6 whitespace-nowrap">
           <a
             href="/#services"
             className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
@@ -88,6 +88,12 @@ export default function Navbar() {
             className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
           >
             About
+          </a>
+          <a
+            href="/contact"
+            className={`font-medium transition-colors ${scrolled ? 'text-gray-700 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
+          >
+            Contact
           </a>
           <a
             href="/student-portal"
@@ -144,7 +150,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="xl:hidden bg-white shadow-xl border-t border-gray-100">
           <div className="px-6 py-4 space-y-3">
-            {['Services', 'Countries', 'CEO Travels', 'Careers', 'Scholarships', 'Blog', 'About']?.map((item) => (
+            {['Services', 'Countries', 'CEO Travels', 'Careers', 'Scholarships', 'Blog', 'About', 'Contact']?.map((item) => (
               <a
                 key={item}
                 href={item === 'Services' ? '/#services' : `/${item?.toLowerCase().replace(' ', '-')}`}

@@ -432,7 +432,7 @@ export default function AboutPage() {
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{office?.city}</h3>
                 <p className="text-gray-600 mb-4">{office?.address}</p>
                 <div className="text-sm text-gray-500 space-y-1">
-                  <p>📞 +233 54 737 1731</p>
+                  <p>📞 +233 54 737 1731 / +233 55 272 1414</p>
                   <p>📧 info@thepsycheconsultgh.com</p>
                 </div>
               </div>

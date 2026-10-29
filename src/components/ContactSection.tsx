@@ -174,10 +174,8 @@ export default function ContactSection() {
                 <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
               </svg>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Call Us</h3>
-              <p className="text-gray-600">+233 54 737 1731</p>
-              <p className="text-gray-600">+233 50 323 4148</p>
-              <p className="text-gray-600">+233 50 490 0063</p>
-              <p className="text-gray-600">+233 25 624 8165</p>
+              <p><a className="text-gray-600 hover:text-indigo-700 transition-colors" href="tel:+233547371731">+233 54 737 1731</a></p>
+              <p><a className="text-gray-600 hover:text-indigo-700 transition-colors" href="tel:+233552721414">+233 55 272 1414</a></p>
             </div>
 
             {/* Address */}

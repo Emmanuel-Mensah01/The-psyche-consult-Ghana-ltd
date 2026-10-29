@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata, Viewport } from 'next';
 import '../styles/index.css';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_PHONE, SITE_EMAIL } from '@/lib/site';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_PHONE, SITE_PHONE_2, SITE_EMAIL } from '@/lib/site';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -59,8 +59,8 @@ const jsonLd = {
       areaServed: { '@type': 'Country', name: 'Ghana' },
       knowsAbout: ['Study abroad', 'University admissions', 'Student visas', 'Scholarships', 'IELTS and TOEFL preparation'],
       contactPoint: [
-        { '@type': 'ContactPoint', telephone: '+233547371731', contactType: 'customer service', areaServed: 'GH', availableLanguage: ['English'] },
-        { '@type': 'ContactPoint', telephone: '+233503234148', contactType: 'customer service', areaServed: 'GH', availableLanguage: ['English'] },
+        { '@type': 'ContactPoint', telephone: SITE_PHONE, contactType: 'customer service', areaServed: 'GH', availableLanguage: ['English'] },
+        { '@type': 'ContactPoint', telephone: SITE_PHONE_2, contactType: 'customer service', areaServed: 'GH', availableLanguage: ['English'] },
       ],
     },
     {
@@ -73,7 +73,7 @@ const jsonLd = {
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'Flower St. Tabora No.3, Adjacent Orthodox Church',
-        addressLocality: 'Accra',
+        addressLocality: 'Lapaz, Accra',
         addressCountry: 'GH',
       },
     },
@@ -83,7 +83,7 @@ const jsonLd = {
       name: `${SITE_NAME} (Kumasi Office)`,
       parentOrganization: { '@id': `${SITE_URL}/#organization` },
       url: SITE_URL,
-      telephone: SITE_PHONE,
+      telephone: SITE_PHONE_2,
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'Tanoso Station, Opposite MultiCredit',

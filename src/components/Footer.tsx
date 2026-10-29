@@ -54,6 +54,7 @@ export default function Footer() {
               <li><a className="hover:text-white transition-colors" href="/scholarships">Scholarships</a></li>
               <li><a className="hover:text-white transition-colors" href="/blog">Blog &amp; Resources</a></li>
               <li><a className="hover:text-white transition-colors" href="/booking">Book Appointment</a></li>
+              <li><a className="hover:text-white transition-colors" href="/contact">Contact Us</a></li>
               <li><a className="hover:text-white transition-colors" href="/careers">Internships</a></li>
             </ul>
           </div>
@@ -68,8 +69,8 @@ export default function Footer() {
               <li>Flower St. Tabora No.3</li>
               <li>Adjacent Orthodox Church</li>
               <li className="pt-2">info@thepsycheconsultgh.com</li>
-              <li>+233 54 737 1731</li>
-              <li>+233 50 323 4148</li>
+              <li><a className="hover:text-white transition-colors" href="tel:+233547371731">+233 54 737 1731</a></li>
+              <li><a className="hover:text-white transition-colors" href="tel:+233552721414">+233 55 272 1414</a></li>
               <li className="pt-2">
                 <a
                   href="https://wa.me/233273664058"
