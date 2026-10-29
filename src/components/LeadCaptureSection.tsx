@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import Icon from '@/components/Icon';
 
 export default function LeadCaptureSection() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
@@ -47,7 +48,7 @@ export default function LeadCaptureSection() {
 
           {submitted ? (
             <div className="text-center py-8">
-              <div className="text-5xl mb-4">🎉</div>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600"><Icon name="check" className="h-8 w-8" strokeWidth={3} /></div>
               <p className="text-xl font-bold text-gray-900 mb-2">Thank you!</p>
               <p className="text-gray-600">We&apos;ll be in touch within 24 hours.</p>
             </div>

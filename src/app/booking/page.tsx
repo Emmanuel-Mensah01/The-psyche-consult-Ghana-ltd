@@ -5,27 +5,24 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { createClient } from '@/lib/supabase/client';
+import Icon from '@/components/Icon';
 
 const counselors = [
   {
     name: 'Solomon Opoku',
     specialty: 'University Selection & Career Counseling',
-    emoji: '👨🏿‍💼',
   },
   {
     name: 'Esther Abeka Thompson',
     specialty: 'Application Strategy & Essay Review',
-    emoji: '👩🏿‍💼',
   },
   {
-    name: 'Solomon Opoku / Raphael Hanson',
+    name: 'Rita Owiredu',
     specialty: 'Visa Applications & Interview Prep',
-    emoji: '👩🏿‍💼',
   },
   {
     name: 'Benjamin Anane-Agyei',
     specialty: 'IELTS, GRE & GMAT Preparation',
-    emoji: '👨🏿‍💼',
   },
 ];
 
@@ -318,7 +315,7 @@ export default function BookingPage() {
                             className="w-4 h-4 text-indigo-600 accent-indigo-600 flex-shrink-0"
                             required={selectedCounselor === ''}
                           />
-                          <div className="text-3xl flex-shrink-0">{counselor.emoji}</div>
+                          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-indigo-900 text-sm font-bold text-gold-300">{counselor.name.split(' ')[0][0]}{counselor.name.split(' ').slice(-1)[0][0]}</div>
                           <div>
                             <div className="font-bold text-gray-900 text-sm">{counselor.name}</div>
                             <div className="text-xs text-gray-500 mt-0.5">{counselor.specialty}</div>
@@ -539,21 +536,21 @@ export default function BookingPage() {
               <h3 className="font-bold text-gray-900 mb-4">Meeting Options</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl">🏢</div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-900 text-gold-300"><Icon name="building" className="h-5 w-5" /></div>
                   <div>
                     <div className="font-semibold text-sm">In-Person</div>
                     <div className="text-xs text-gray-600">Visit our Accra office</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl">💻</div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-900 text-gold-300"><Icon name="monitor" className="h-5 w-5" /></div>
                   <div>
                     <div className="font-semibold text-sm">Video Call</div>
                     <div className="text-xs text-gray-600">Zoom or Google Meet</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="text-2xl">📞</div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-900 text-gold-300"><Icon name="phone" className="h-5 w-5" /></div>
                   <div>
                     <div className="font-semibold text-sm">Phone Call</div>
                     <div className="text-xs text-gray-600">Direct consultation</div>

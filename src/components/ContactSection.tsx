@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import OfficeMap from '@/components/OfficeMap';
+import Icon from '@/components/Icon';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -62,7 +63,7 @@ export default function ContactSection() {
           <div>
             {submitted ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="text-5xl mb-4">🎉</div>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600"><Icon name="check" className="h-8 w-8" strokeWidth={3} /></div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
                 <p className="text-gray-600">Thank you for reaching out. We&apos;ll get back to you within 24 hours.</p>
               </div>

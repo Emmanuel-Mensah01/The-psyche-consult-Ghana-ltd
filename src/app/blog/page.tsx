@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import { posts, categories } from '@/data/blogPosts';
+import Icon from '@/components/Icon';
 
 export default function BlogPage() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -26,7 +27,7 @@ export default function BlogPage() {
         </div>
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <span className="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
-            📚 Knowledge Hub
+            <span className="inline-flex items-center gap-2"><Icon name="book" className="h-4 w-4" />Knowledge Hub</span>
           </span>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Blog &amp; <span className="text-indigo-300">Resources</span>
@@ -146,7 +147,7 @@ export default function BlogPage() {
       {/* Newsletter CTA */}
       <section className="py-20 bg-indigo-900 text-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <div className="text-5xl mb-6">📩</div>
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 text-gold-300"><Icon name="mail" className="h-8 w-8" /></div>
           <h2 className="text-4xl font-bold mb-4">Stay Informed</h2>
           <p className="text-indigo-200 text-lg mb-8">
             Get the latest scholarship alerts, application deadlines, and study abroad tips delivered to your inbox.

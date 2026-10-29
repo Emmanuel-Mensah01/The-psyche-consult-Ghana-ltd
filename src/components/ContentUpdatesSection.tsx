@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { getVideoSource } from '@/lib/video';
+import Icon from '@/components/Icon';
 
 interface ContentItem {
   id: string;
@@ -17,12 +18,12 @@ interface ContentItem {
 const gold = { color: 'text-gold-600', bg: 'bg-gold-300/30' };
 const navy = { color: 'text-indigo-800', bg: 'bg-indigo-100' };
 const typeConfig: Record<string, { icon: string; color: string; bg: string }> = {
-  announcement: { icon: '📢', ...navy },
-  scholarship: { icon: '🎓', ...gold },
-  event: { icon: '📅', ...navy },
-  promo: { icon: '🎉', ...gold },
-  video: { icon: '🎬', ...navy },
-  flyer: { icon: '📋', ...navy },
+  announcement: { icon: 'megaphone', ...navy },
+  scholarship: { icon: 'cap', ...gold },
+  event: { icon: 'calendar', ...navy },
+  promo: { icon: 'sparkles', ...gold },
+  video: { icon: 'video', ...navy },
+  flyer: { icon: 'clipboard', ...navy },
 };
 
 const staticItems: ContentItem[] = [
@@ -181,12 +182,12 @@ export default function ContentUpdatesSection() {
                 ) : item.image_url ? (
                   <img src={item.image_url} alt={item.title} loading="lazy" className="block w-full h-auto" />
                 ) : (
-                  <div className={`aspect-[16/9] flex items-center justify-center text-6xl ${type.bg}`}>{type.icon}</div>
+                  <div className={`aspect-[16/9] flex items-center justify-center ${type.bg} ${type.color}`}><Icon name={type.icon} className="h-16 w-16" strokeWidth={1.5} /></div>
                 )}
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${type.bg} ${type.color}`}>
-                      {type.icon} {item.content_type.charAt(0).toUpperCase() + item.content_type.slice(1)}
+                      <Icon name={type.icon} className="mr-1.5 inline h-3.5 w-3.5 -mt-0.5" />{item.content_type.charAt(0).toUpperCase() + item.content_type.slice(1)}
                     </span>
                     {item.expires_at && (
                       <span className="text-xs text-orange-600 font-semibold">

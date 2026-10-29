@@ -6,6 +6,7 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import TeamAvatar from '@/components/TeamAvatar';
 import CoreValues from '@/components/CoreValues';
 import { createClient } from '@/lib/supabase/client';
+import Icon from '@/components/Icon';
 
 interface Testimonial {
   id: string;
@@ -20,22 +21,22 @@ interface Testimonial {
 
 const values = [
   {
-    emoji: '🎯',
+    icon: 'target',
     title: 'Student-First',
     description: 'Every decision we make is guided by what\'s best for the student. We prioritize your goals, timeline, and budget above all else.',
   },
   {
-    emoji: '🤝',
+    icon: 'users',
     title: 'Integrity',
     description: 'We give honest advice — even when it\'s not what you want to hear. No false promises, no inflated success rates.',
   },
   {
-    emoji: '🌍',
+    icon: 'globe',
     title: 'Global Reach',
     description: 'With partner universities across the world, we open doors that most students don\'t know exist.',
   },
   {
-    emoji: '📈',
+    icon: 'trending',
     title: 'Results-Driven',
     description: 'We measure our success by yours. Our track record of visa approvals and university placements speaks for itself.',
   },
@@ -205,7 +206,7 @@ export default function AboutPage() {
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="max-w-3xl">
             <span className="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
-              🏫 Our Story
+              <span className="inline-flex items-center gap-2"><Icon name="cap" className="h-4 w-4" />Our Story</span>
             </span>
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Ghana&apos;s Trusted Partner for <span className="text-indigo-300">International Education</span>
@@ -296,7 +297,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-3xl transform rotate-2 opacity-20" />
               <div className="relative bg-gradient-to-br from-indigo-50 to-purple-50 p-8 rounded-3xl border border-indigo-100">
-                <div className="text-6xl mb-6">🎓</div>
+                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-900 text-gold-300"><Icon name="cap" className="h-8 w-8" /></div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Led by Solomon Opoku</h3>
                 <p className="text-gray-600 leading-relaxed mb-6">
                   Our CEO &amp; Founder, Solomon Opoku, leads The Psyche Consult Ghana Ltd with one goal: helping Ghanaian students find the right university abroad, and get there with confidence.
@@ -322,7 +323,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values?.map((v) => (
               <div key={v?.title} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
-                <div className="text-4xl mb-4">{v?.emoji}</div>
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-900 text-gold-300"><Icon name={v?.icon} className="h-6 w-6" /></div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{v?.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{v?.description}</p>
               </div>
@@ -419,21 +420,21 @@ export default function AboutPage() {
               {
                 city: 'Kumasi Office',
                 address: 'Tanoso Station, Opposite MultiCredit',
-                emoji: '🏢',
+                icon: 'building',
               },
               {
                 city: 'Accra Office',
                 address: 'Flower St. Tabora No.3, Adjacent Orthodox Church',
-                emoji: '🏙️',
+                icon: 'city',
               },
             ]?.map((office) => (
               <div key={office?.city} className="bg-indigo-50 rounded-2xl p-8 border border-indigo-100 text-center">
-                <div className="text-5xl mb-4">{office?.emoji}</div>
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-900 text-gold-300"><Icon name={office?.icon} className="h-7 w-7" /></div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{office?.city}</h3>
                 <p className="text-gray-600 mb-4">{office?.address}</p>
                 <div className="text-sm text-gray-500 space-y-1">
-                  <p>📞 +233 54 737 1731 / +233 55 272 1414</p>
-                  <p>📧 info@thepsycheconsultgh.com</p>
+                  <p className="flex items-center justify-center gap-2"><Icon name="phone" className="h-4 w-4" /> +233 54 737 1731 / +233 55 272 1414</p>
+                  <p className="flex items-center justify-center gap-2"><Icon name="mail" className="h-4 w-4" /> info@thepsycheconsultgh.com</p>
                 </div>
               </div>
             ))}

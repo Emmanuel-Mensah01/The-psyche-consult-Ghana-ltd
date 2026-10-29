@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import Flag from '@/components/Flag';
+import Icon from '@/components/Icon';
 
 interface Scholarship {
   id: number;
@@ -247,7 +248,7 @@ export default function ScholarshipsPage() {
         </div>
         <div className="relative max-w-7xl mx-auto px-6 text-center">
           <span className="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
-            💰 Funding Opportunities
+            <span className="inline-flex items-center gap-2"><Icon name="banknote" className="h-4 w-4" />Funding Opportunities</span>
           </span>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Scholarship <span className="text-indigo-300">Directory</span>
@@ -268,7 +269,7 @@ export default function ScholarshipsPage() {
               href="/scholarships/apply"
               className="inline-flex items-center gap-2 bg-white text-indigo-700 px-8 py-3.5 rounded-full font-bold hover:bg-indigo-50 transition-all shadow-lg text-sm"
             >
-              🎓 Apply for a Scholarship
+              <span className="inline-flex items-center gap-2"><Icon name="cap" className="h-4 w-4" />Apply for a Scholarship</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </Link>
           </div>
@@ -311,7 +312,7 @@ export default function ScholarshipsPage() {
         <div className="max-w-7xl mx-auto px-6">
           {filtered.length === 0 ? (
             <div className="text-center py-20 text-gray-500">
-              <div className="text-5xl mb-4">🔍</div>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50 text-indigo-700"><Icon name="search" className="h-8 w-8" /></div>
               <p className="text-xl font-semibold">No scholarships match your filters.</p>
               <p className="text-sm mt-2">Try adjusting your search criteria.</p>
             </div>
@@ -350,7 +351,7 @@ export default function ScholarshipsPage() {
                         <ul className="space-y-1">
                           {s.coverage.map((c) => (
                             <li key={c} className="flex items-start gap-2 text-sm text-gray-600">
-                              <span className="text-green-600 mt-0.5">✓</span>
+                              <Icon name="check" className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" strokeWidth={3} />
                               {c}
                             </li>
                           ))}
