@@ -1,6 +1,7 @@
 import React from 'react';
+import Icon from '@/components/Icon';
 
-type Member = { name: string; role: string; bio: string; skills: string[]; image?: string };
+type Member = { name: string; role: string; bio: string; skills: string[]; image?: string; phone?: string };
 
 // To add a photo: save a 4:5 portrait in public/team/ and set image: '/team/file.jpg' on the member.
 const team: Member[] = [
@@ -9,8 +10,9 @@ const team: Member[] = [
   { name: 'Rita Owiredu', role: 'Executive Secretary', bio: 'Keeps the office running smoothly, coordinating schedules, communication and student enquiries.', skills: ['Office Administration', 'Scheduling', 'Client Communication'], image: '/team/rita-owiredu.jpg' },
   { name: 'Raphael Hanson', role: 'Admissions / Visa Assistant Manager', bio: 'Specialist in admissions and visa processing with exceptional success rate.', skills: ['Visa Applications', 'Admissions Support', 'Documentation'] },
   { name: 'Benjamin Anane-Agyei', role: 'Test Prep Coordinator', bio: 'Expert test preparation coordinator helping students achieve their best scores.', skills: ['IELTS', 'GRE', 'GMAT', 'Test Strategy'] },
+  { name: 'Emmanuel Kwakye', role: 'USA Representative', bio: 'Our representative on the ground in the United States, supporting students and partner universities.', skills: ['USA Representation', 'Student Support'], image: '/team/emmanuel-kwakye.jpg', phone: '+1 (774) 262-9597' },
   { name: 'Florence Missah', role: 'Senior Enrollment Officer', bio: 'Guides students through admissions and enrollment, from first application to arrival on campus.', skills: ['Enrollment', 'Admissions Support', 'Applications'] },
-  { name: 'Konadu Ama Augustina', role: 'Senior Marketing Officer', bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.', skills: ['Marketing', 'Outreach', 'Brand & Social Media'] },
+  { name: 'Kunadu Ama Augustina', role: 'Senior Marketing Officer', bio: 'Leads our outreach and brand, connecting students and families with study abroad opportunities.', skills: ['Marketing', 'Outreach', 'Brand & Social Media'] },
   { name: 'Caleb Eyram Kofi Bakuyeya', role: 'Enrollment Officer', bio: 'Supports students through enrollment, documentation and onboarding.', skills: ['Enrollment', 'Documentation', 'Student Support'] },
 ];
 
@@ -49,6 +51,12 @@ export default function TeamSection() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {m.skills.map((s) => <span key={s} className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold">{s}</span>)}
               </div>
+              {m.phone && (
+                <a href={`tel:${m.phone.replace(/[^+\d]/g, '')}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 hover:text-indigo-900 transition-colors">
+                  <Icon name="phone" className="h-4 w-4" />
+                  {m.phone}
+                </a>
+              )}
             </article>
           ))}
         </div>

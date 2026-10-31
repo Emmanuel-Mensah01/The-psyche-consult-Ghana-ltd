@@ -77,6 +77,14 @@ const team = [
     color: 'from-teal-500 to-emerald-600', // image: '/team/benjamin-anane-agyei.jpg',
   },
   {
+    name: 'Emmanuel Kwakye',
+    role: 'USA Representative',
+    bio: 'Our representative on the ground in the United States, supporting students and partner universities.',
+    color: 'from-indigo-500 to-blue-600',
+    image: '/team/emmanuel-kwakye.jpg',
+    phone: '+1 (774) 262-9597',
+  },
+  {
     name: 'Florence Missah',
     role: 'Senior Enrollment Officer',
     bio: 'Guides students through admissions and enrollment, from first application to arrival on campus.',
@@ -349,6 +357,12 @@ export default function AboutPage() {
                 <h3 className="text-lg font-bold text-gray-900 mb-1">{member?.name}</h3>
                 <p className="text-indigo-600 text-sm font-semibold mb-3">{member?.role}</p>
                 <p className="text-gray-500 text-sm leading-relaxed">{member?.bio}</p>
+                {(member as { phone?: string })?.phone && (
+                  <a href={`tel:${(member as { phone?: string }).phone!.replace(/[^+\d]/g, '')}`} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-indigo-700 hover:text-indigo-900 transition-colors">
+                    <Icon name="phone" className="h-4 w-4" />
+                    {(member as { phone?: string }).phone}
+                  </a>
+                )}
               </div>
             ))}
           </div>
