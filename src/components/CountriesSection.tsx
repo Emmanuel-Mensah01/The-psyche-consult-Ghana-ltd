@@ -97,12 +97,12 @@ export default function CountriesSection() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+          <div className="flex flex-wrap justify-center gap-6 mb-10">
             {cards.filter((c) => c.universities > 0).map((country) => (
               <a
                 key={country.key}
                 href={`/countries/${country.slug}`}
-                className="group relative overflow-hidden rounded-2xl bg-indigo-900 p-6 text-left ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:ring-gold-400/60 hover:shadow-2xl hover:shadow-indigo-900/30"
+                className="group relative overflow-hidden rounded-2xl bg-indigo-900 p-6 text-left w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(20%-1.2rem)] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:ring-gold-400/60 hover:shadow-2xl hover:shadow-indigo-900/30"
               >
                 <div className="mb-8 flex justify-between items-start"><Flag emoji={country.flag} width={64} /><span className="text-gold-400 text-xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden>↗</span></div>
                 <h3 className="font-display text-xl font-semibold text-white mb-1">{country.name}</h3>

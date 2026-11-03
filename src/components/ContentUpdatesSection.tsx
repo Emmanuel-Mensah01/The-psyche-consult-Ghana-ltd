@@ -26,12 +26,6 @@ const typeConfig: Record<string, { icon: string; color: string; bg: string }> = 
   flyer: { icon: 'clipboard', ...navy },
 };
 
-const staticItems: ContentItem[] = [
-  { id: 'static-1', title: 'Scholarship Applications Now Open 2026', description: 'Apply now for full and partial scholarships to top universities in the USA, UK, and Canada. Limited slots available!', content_type: 'scholarship', image_url: null, link_url: null, display_order: 1, expires_at: null },
-  { id: 'static-2', title: 'Free Visa Counselling Workshop', description: 'Join our free workshop on student visa applications. Learn tips and tricks from our expert advisors.', content_type: 'event', image_url: null, link_url: null, display_order: 2, expires_at: null },
-  { id: 'static-3', title: 'New Partner Universities Added', description: 'We have added 15 new partner universities in Australia and Germany. Explore your options today!', content_type: 'announcement', image_url: null, link_url: null, display_order: 3, expires_at: null },
-];
-
 function PlayIcon({ size = 28 }: { size?: number }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -142,10 +136,10 @@ export default function ContentUpdatesSection() {
           const active = data.filter((item) => item.content_type !== 'travel' && (!item.expires_at || new Date(item.expires_at) > now));
           setItems(active);
         } else {
-          setItems(staticItems);
+          setItems([]);
         }
       } catch {
-        setItems(staticItems);
+        setItems([]);
       } finally {
         setLoading(false);
       }

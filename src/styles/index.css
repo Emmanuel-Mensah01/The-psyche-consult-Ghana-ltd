@@ -37,6 +37,7 @@ a[aria-label="Chat on WhatsApp"] { animation: wa-pulse 2.8s ease-out infinite; }
   html { scroll-behavior: auto; }
   .marquee-track, .kenburns, img[src^="/assets/images/hero-ambassadors"], a[aria-label="Chat on WhatsApp"] { animation: none !important; }
   .reveal-hidden { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .marquee { overflow-x: auto; }
 }
 
 /* Phones: slightly smaller type and calmer spacing (laptop and desktop are unchanged) */
@@ -57,3 +58,30 @@ a[aria-label="Chat on WhatsApp"] { animation: wa-pulse 2.8s ease-out infinite; }
   .mb-14 { margin-bottom: 2.5rem; }
   .min-h-\[380px\] { min-height: 320px; }
 }
+
+/* Typography polish: calmer, more editorial text across the whole site */
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+.font-display { font-optical-sizing: auto; letter-spacing: -0.02em; }
+.text-balance { text-wrap: balance; }
+::selection { background: rgba(230, 189, 82, 0.4); }
+:focus-visible { outline: 2px solid #e6bd52; outline-offset: 3px; border-radius: 6px; }
+
+/* Consistent, editorial section headings across the front page (gold rule, serif title, calm subtitle) */
+section .text-center.mb-16 > h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: #081a40;
+}
+section .text-center.mb-16 > h2::before {
+  content: '';
+  display: block;
+  width: 3.25rem;
+  height: 3px;
+  margin: 0 auto 1.25rem;
+  border-radius: 9999px;
+  background: #e6bd52;
+}
+section .text-center.mb-16 > p { color: #5b6478; line-height: 1.7; }

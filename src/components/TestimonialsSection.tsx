@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { getVideoSource } from '@/lib/video';
+import Flag from '@/components/Flag';
 
 interface Testimonial {
   id: string;
@@ -99,6 +100,8 @@ export default function TestimonialsSection() {
   const videoItems = videoTestimonials.filter((t) => t.video_url);
   const textItems = videoTestimonials.filter((t) => !t.video_url);
   const displayTextItems = textItems.length > 0 ? textItems : staticTestimonials;
+  // Repeat short lists so the endless row never shows a gap
+  const loopItems = displayTextItems.length >= 8 ? displayTextItems : Array.from({ length: Math.ceil(8 / displayTextItems.length) }, () => displayTextItems).flat();
 
   return (
     <section className="py-24 bg-white" id="testimonials">
@@ -145,26 +148,42 @@ export default function TestimonialsSection() {
           </div>
         )}
 
-        {/* Text Testimonials */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {displayTextItems.map((t) => (
-            <div key={t.id} className="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl border-2 border-indigo-100 hover:shadow-xl transition-all">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
-                  {t.student_name.charAt(0)}
-                </div>
-                <div>
-                  <h4 className="font-bold text-gray-900 text-sm">{t.student_name}</h4>
-                  <p className="text-xs text-gray-600">{t.destination}</p>
-                </div>
+        {/* Written testimonials: a slow, endless row of quote cards (pauses on hover, scrolls by hand if motion is reduced) */}
+        <div className="marquee -mx-6" aria-label="Student testimonials">
+          <div className="marquee-track gap-6 px-3" style={{ ['--marquee-duration' as string]: '110s' }}>
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex shrink-0 items-stretch gap-6" aria-hidden={copy === 1}>
+                {loopItems.map((t, i) => {
+                  const flag = getFlag(t.destination);
+                  return (
+                    <figure
+                      key={`${copy}-${t.id}-${i}`}
+                      className="relative flex w-[300px] sm:w-[360px] flex-col rounded-3xl bg-white p-7 sm:p-8 ring-1 ring-indigo-100 shadow-sm"
+                    >
+                      <span className="absolute right-6 top-3 font-display text-7xl leading-none text-gold-400/70 select-none" aria-hidden>&rdquo;</span>
+                      <div className="mb-4 flex gap-1" aria-label="5 out of 5 stars">
+                        {[...Array(5)].map((_, k) => <StarIcon key={k} />)}
+                      </div>
+                      <blockquote className="flex-1 text-[15px] leading-relaxed text-gray-700 whitespace-normal">{t.quote}</blockquote>
+                      <figcaption className="mt-6 flex items-center gap-3 border-t border-gray-100 pt-5 whitespace-normal">
+                        <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-indigo-900 font-bold text-gold-300 ring-2 ring-gold-400/60">
+                          {t.student_name.charAt(0)}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate font-bold text-gray-900">{t.student_name}</span>
+                          <span className="block text-xs text-gray-500">{t.university}</span>
+                          <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+                            {flag !== '🎓' && <Flag emoji={flag} width={16} />}
+                            {t.destination}
+                          </span>
+                        </span>
+                      </figcaption>
+                    </figure>
+                  );
+                })}
               </div>
-              <div className="flex gap-1 mb-3">
-                {[...Array(5)].map((_, i) => <StarIcon key={i} />)}
-              </div>
-              <p className="text-sm text-indigo-600 font-semibold mb-2">{t.university}</p>
-              <p className="text-gray-700 text-sm">{t.quote}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
