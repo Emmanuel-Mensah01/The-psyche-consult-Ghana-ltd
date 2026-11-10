@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import media from '@/data/mediaManifest.json';
 import { getVideoSource } from '@/lib/video';
 import Flag from '@/components/Flag';
 
@@ -74,32 +74,12 @@ function VideoModal({ url, name, onClose }: { url: string; name: string; onClose
 }
 
 export default function TestimonialsSection() {
-  const [videoTestimonials, setVideoTestimonials] = useState<Testimonial[]>([]);
+  const videoTestimonials = media.testimonials as Testimonial[];
   const [activeVideo, setActiveVideo] = useState<Testimonial | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const supabase = createClient();
-        const { data } = await supabase
-          .from('testimonials')
-          .select('*')
-          .eq('is_published', true)
-          .order('display_order', { ascending: true });
-        if (data && data.length > 0) setVideoTestimonials(data);
-      } catch {
-        // silently fall back to static
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTestimonials();
-  }, []);
+  const loading = false;
 
   const videoItems = videoTestimonials.filter((t) => t.video_url);
-  const textItems = videoTestimonials.filter((t) => !t.video_url);
-  const displayTextItems = textItems.length > 0 ? textItems : staticTestimonials;
+  const displayTextItems = staticTestimonials;
   // Repeat short lists so the endless row never shows a gap
   const loopItems = displayTextItems.length >= 8 ? displayTextItems : Array.from({ length: Math.ceil(8 / displayTextItems.length) }, () => displayTextItems).flat();
 

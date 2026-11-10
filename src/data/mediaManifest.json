@@ -1,0 +1,81 @@
+{
+  "travels": [
+    {
+      "id": "travel-0",
+      "title": "CEO LIVE AT AVILA UNIVERSITY",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20AVILA%20UNIVERSITY.jpeg"
+    },
+    {
+      "id": "travel-1",
+      "title": "CEO LIVE AT KANSAS CITY",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20KANSAS%20CITY.jpeg"
+    },
+    {
+      "id": "travel-2",
+      "title": "CEO LIVE AT LANCASTER UNIVERSITY (2)",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20LANCASTER%20UNIVERSITY%20(2).jpeg"
+    },
+    {
+      "id": "travel-3",
+      "title": "CEO LIVE AT LANCASTER UNIVERSITY",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20LANCASTER%20UNIVERSITY.jpeg"
+    },
+    {
+      "id": "travel-4",
+      "title": "CEO LIVE AT NEWCASTLE",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20NEWCASTLE.jpeg"
+    },
+    {
+      "id": "travel-5",
+      "title": "CEO LIVE AT STERLING UNIVERSITY",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20AT%20STERLING%20UNIVERSITY.jpeg"
+    },
+    {
+      "id": "travel-6",
+      "title": "CEO LIVE IN AVILA",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20IN%20AVILA.jpeg"
+    },
+    {
+      "id": "travel-7",
+      "title": "CEO LIVE IN BARCELONA, SPAIN",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20IN%20BARCELONA%20%2C%20SPAIN.jpeg"
+    },
+    {
+      "id": "travel-8",
+      "title": "CEO LIVE IN MANCHESTER UK",
+      "description": null,
+      "image_url": "/media/travels/CEO%20LIVE%20IN%20MANCHESTER%20UK.jpeg"
+    }
+  ],
+  "updates": [
+    {
+      "id": "update-0",
+      "title": "How To Study Abroad Boston MA",
+      "description": null,
+      "content_type": "video",
+      "image_url": null,
+      "link_url": "/media/updates/How-To-Study-Abroad%20Boston-MA.mp4",
+      "display_order": 0,
+      "expires_at": null
+    },
+    {
+      "id": "update-1",
+      "title": "How To Study Abroad Harvard University",
+      "description": null,
+      "content_type": "video",
+      "image_url": null,
+      "link_url": "/media/updates/How-To-Study-Abroad-Harvard-University.mp4",
+      "display_order": 1,
+      "expires_at": null
+    }
+  ],
+  "testimonials": []
+}

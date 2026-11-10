@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import media from '@/data/mediaManifest.json';
 import { getVideoSource } from '@/lib/video';
 import Icon from '@/components/Icon';
 
@@ -117,37 +117,11 @@ function VideoThumb({ item, onPlay }: { item: ContentItem; onPlay: () => void })
 }
 
 export default function ContentUpdatesSection() {
-  const [items, setItems] = useState<ContentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const items = media.updates as ContentItem[];
   const [activeVideo, setActiveVideo] = useState<ContentItem | null>(null);
   const [activeImage, setActiveImage] = useState<ContentItem | null>(null);
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const supabase = createClient();
-        const { data } = await supabase
-          .from('content_items')
-          .select('id, title, description, content_type, image_url, link_url, display_order, expires_at')
-          .eq('is_published', true)
-          .order('display_order', { ascending: true });
-        if (data && data.length > 0) {
-          const now = new Date();
-          const active = data.filter((item) => item.content_type !== 'travel' && (!item.expires_at || new Date(item.expires_at) > now));
-          setItems(active);
-        } else {
-          setItems([]);
-        }
-      } catch {
-        setItems([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchContent();
-  }, []);
-
-  if (loading || items.length === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <section className="py-28 bg-indigo-50" id="updates">

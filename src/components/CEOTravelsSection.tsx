@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { useReveal } from '@/lib/useReveal';
-import { createClient } from '@/lib/supabase/client';
+import media from '@/data/mediaManifest.json';
 
 interface TravelPhoto { id: string; title: string; description: string | null; image_url: string | null; }
 
@@ -115,24 +115,11 @@ function AutoRail({ list, onOpen }: { list: TravelPhoto[]; onOpen: (p: TravelPho
   );
 }
 
-/** preview = homepage scroll rail. Without it: full gallery for /ceo-travels. Photos are managed in admin (content_type 'travel'). */
+/** preview = homepage scroll rail. Without it: full gallery for /ceo-travels. Photos come from public/media/travels. */
 export default function CEOTravelsSection({ preview = false }: { preview?: boolean }) {
-  const [photos, setPhotos] = useState<TravelPhoto[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const photos = media.travels as TravelPhoto[];
+  const loaded = true;
   const [active, setActive] = useState<TravelPhoto | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await createClient()
-          .from('content_items').select('id, title, description, image_url')
-          .eq('content_type', 'travel').eq('is_published', true)
-          .order('display_order', { ascending: true });
-        if (data) setPhotos(data.filter((p) => p.image_url));
-      } catch { /* stays empty */ }
-      setLoaded(true);
-    })();
-  }, []);
 
   if (preview && photos.length === 0) return null;
   const list = preview ? photos.slice(0, 8) : photos;
